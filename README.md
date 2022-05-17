@@ -1,2 +1,2 @@
 # RepeatExplorer workshop
-This repository includes a supplementary training materials and script used during RepeatExplorer workshop (http://repeatexplorer.org/)
+This repository includes a supplementary training materials and scripts used during RepeatExplorer workshop (http://repeatexplorer.org/)
