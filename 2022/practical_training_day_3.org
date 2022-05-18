@@ -32,7 +32,7 @@ conda create -n singularity -c conda-forge singularity=3.6.3
 #+end_src
 
 
-** Get repeatexplorer2 singularity image:
+** Get RepeatExplorer2 singularity image:
 singularity imag is available in https://github.com/repeatexplorer/repex_tarean/releases
 #+begin_src bash :tangle day3_commands.sh
 conda activate singularity
@@ -54,7 +54,7 @@ singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_
 
 * Example of clustering including data pre-processing
 ** Data:
-Get data and check the quality of reads:
+Get data and check the quality of reads using FastQC program:
 #+begin_src bash :tangle day3_commands.sh
 # clustering example 1
 cd ~/repeatexplorer
@@ -65,10 +65,10 @@ wget https://github.com/kavonrtep/example_data/raw/master/SRR089356_1.fastq.gz
 wget https://github.com/kavonrtep/example_data/raw/master/SRR089356_2.fastq.gz
 fastqc *.fastq.gz
 #+end_src
+When QC run finishe, inspect html reports.
 
-Use Trimmomatic program to remove low quality reads and trim end2. Trimmomatic will be used in Pair-end mode. 
-
-Trimmomatic usage:
+**  Filtering on quality
+Use *Trimmomatic* program to remove low quality reads and trim ends. Trimmomatic will be used in Pair-end mode. Trimmomatic options are:
 #+begin_src text
 TrimmomaticPE  [-threads threads] [-phred33 | -phred64] [-trimlog logFile] \
 paired_output_1 unpaired_output_1 paired_output_2 unpaired_output_2 step_1 ...
@@ -104,7 +104,7 @@ The current trimming steps are:
 #+end_src
 
 
-**  Filtering on quality
+
 #+begin_src bash :tangle day3_commands.sh
 # Adapter sequences are located in /usr/share/trimmomatic/
 cp  /usr/share/trimmomatic/*.fa .
@@ -121,14 +121,14 @@ seqkit stats *fastq.gz
 fastqc *clean*.fastq.gz
 #+end_src
 
-** Sample to required coverage
+** Sample to required coverage:
 #+begin_src bash :tangle day3_commands.sh
 # paired end read sampling:
 seqtk sample -s 10  SRR089356_1_clean.fastq.gz 5000 >  SRR089356_1_clean_sample.fastq
 seqtk sample -s 10  SRR089356_2_clean.fastq.gz 5000 >  SRR089356_2_clean_sample.fastq
 #+end_src
 
-** make FASTQ interleaved file and convert to FASTA
+** Interleaved pairs into single file:
 #+begin_src bash :tangle day3_commands.sh
 # make interleaved FASTQ
 seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq seqtk  > SRR089356_clean_sample_merged.fastq
