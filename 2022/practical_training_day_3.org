@@ -6,25 +6,25 @@
 Download miniconda intaller. For more information see https://docs.conda.io/en/latest/miniconda.html
 
 #+begin_src bash :tangle day3_commands.sh
-# download miniconda installer
+# Download miniconda installer
 cd ~/Downloads
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-# verify checksum
+# Verify checksum
 sha256sum Miniconda3-latest-Linux-x86_64.sh
-# check um can be found on miniconda ducumantation : https://docs.conda.io/en/latest/miniconda.html
+# Checksum can be found on miniconda documentation : https://docs.conda.io/en/latest/miniconda.html
 #+end_src
 
 
 Run installer;
 #+begin_src bash :tangle day3_commands.sh
-# install miniconda
+# Install miniconda
 bash Miniconda3-latest-Linux-x86_64.sh
-bash  # to activate conda base env.
+bash  # To activate conda base env.
 #+end_src
 On prompt: 
 - Confirm license and installation location
 - Activate initialization of Miniconda3
-- after installation, close and reopen terminal or just type ~bash~
+- After installation, close and reopen terminal or just type ~bash~
 ** Installation of Singularity
 
 #+begin_src bash :tangle day3_commands.sh
@@ -33,21 +33,21 @@ conda create -n singularity -c conda-forge singularity=3.6.3
 
 
 ** Get RepeatExplorer2 singularity image:
-singularity imag is available in https://github.com/repeatexplorer/repex_tarean/releases
+singularity image is available in https://github.com/repeatexplorer/repex_tarean/releases
 #+begin_src bash :tangle day3_commands.sh
 conda activate singularity
 cd 
 mkdir repeatexplorer && cd repeatexplorer
 singularity pull https://github.com/repeatexplorer/repex_tarean/releases/download/0.3.8/repex_tarean_0.3.8.sif
 singularity build  --sandbox repex_tarean repex_tarean_0.3.8.sif
-# verify build
+# Verify build
 singularity exec repex_tarean seqclust --help
 #+end_src
 
 
 *** Run clustering on test data:
 #+begin_src bash :tangle day3_commands.sh
-# download small pair-end dataset:
+# Download small pair-end dataset:
 wget https://bitbucket.org/petrnovak/repex_tarean/raw/devel/test_data/LAS_paired_10k.fas
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_test /data/LAS_paired_10k.fas
 #+end_src
@@ -56,19 +56,19 @@ singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_
 ** Data:
 Get data and check the quality of reads using FastQC program:
 #+begin_src bash :tangle day3_commands.sh
-# clustering example 1
+# Clustering example 1
 cd ~/repeatexplorer
 mkdir single_species
 cd single_species
-# sample of T.cacao pair-end illumina reads
+# Sample of T.cacao pair-end Illumina reads
 wget https://github.com/kavonrtep/example_data/raw/master/SRR089356_1.fastq.gz
 wget https://github.com/kavonrtep/example_data/raw/master/SRR089356_2.fastq.gz
 fastqc *.fastq.gz
 #+end_src
-When QC run finishe, inspect html reports.
+When QC run finishes, inspect html reports.
 
-**  Filtering on quality
-Use *Trimmomatic* program to remove low quality reads and trim ends. Trimmomatic will be used in Pair-end mode. Trimmomatic options are:
+**  Quality filtering
+Use *Trimmomatic* program to remove low quality reads and trim read ends. Trimmomatic will be used in Pair-end mode. Trimmomatic options are:
 #+begin_src text
 TrimmomaticPE  [-threads threads] [-phred33 | -phred64] [-trimlog logFile] \
 paired_output_1 unpaired_output_1 paired_output_2 unpaired_output_2 step_1 ...
@@ -109,37 +109,37 @@ The current trimming steps are:
 # Adapter sequences are located in /usr/share/trimmomatic/
 cp  /usr/share/trimmomatic/*.fa .
 
-# remove first 10 nt, min length must be 90
+# Remove first 10 nt, min length must be 90
 TrimmomaticPE -phred33 SRR089356_1.fastq.gz SRR089356_2.fastq.gz \
  SRR089356_1_clean.fastq.gz SRR089356_1_unpaired.fastq.gz \
  SRR089356_2_clean.fastq.gz SRR089356_2_unpaired.fastq.gz \
  ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 SLIDINGWINDOW:4:10 CROP:100 HEADCROP:10 MINLEN:90
 
-# check statistics of fastq files:
+# Check statistics of fastq files:
 seqkit stats *fastq.gz
-# run fastqc on clean data:
+# Run fastqc on clean data:
 fastqc *clean*.fastq.gz
 #+end_src
 
 ** Sample to required coverage:
 #+begin_src bash :tangle day3_commands.sh
-# paired end read sampling:
+# Paired end read sampling:
 seqtk sample -s 10  SRR089356_1_clean.fastq.gz 5000 >  SRR089356_1_clean_sample.fastq
 seqtk sample -s 10  SRR089356_2_clean.fastq.gz 5000 >  SRR089356_2_clean_sample.fastq
 #+end_src
 
 ** Interleaved pairs into single file:
 #+begin_src bash :tangle day3_commands.sh
-# make interleaved FASTQ
+# Make interleaved FASTQ
 seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq seqtk  > SRR089356_clean_sample_merged.fastq
-# convert to FASTA
+# Convert to FASTA
 seqtk seq -A SRR089356_clean_sample_merged.fastq > SRR089356_clean_sample_merged.fasta
 #+end_src
 
 
 ** run RepeatExplorer with default settings:
 #+begin_src bash :tangle day3_commands.sh
-# run clustering with default settings
+# Run clustering with default settings
 cd ~/repeatexplorer
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_output_run1 /data/single_species/SRR089356_clean_sample_merged.fasta
 #+end_src
@@ -232,7 +232,7 @@ NOTE : current  directory (~$PWD~) is /data directory in singularity container.
 ** data:
 
 #+begin_src bash :tangle day3_commands.sh
-# get data fro comparative analysis
+# Get data from comparative analysis
 cd ~/repeatexplorer
 mkdir comparative
 cd comparative
@@ -270,14 +270,14 @@ seqtk sample -s 10  SRR9938304_2_clean.fastq.gz 5000 >  SRR9938304_2_clean_sampl
 ** Interleave:
 #+begin_src bash :tangle day3_commands.sh
 seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq seqtk  > SRR089356_clean_sample_merged.fastq
-seqtk mergepe SRR089356_1_clean_sample.fastq SRR9938304_2_clean_sample.fastq seqtk  > SRR9938304_clean_sample_merged.fastq
-# convert to FASTA
+seqtk mergepe SRR9938304_1_clean_sample.fastq SRR9938304_2_clean_sample.fastq seqtk  > SRR9938304_clean_sample_merged.fastq
+# Convert to FASTA
 seqtk seq -A SRR089356_clean_sample_merged.fastq > SRR089356_clean_sample_merged.fasta
 seqtk seq -A SRR9938304_clean_sample_merged.fastq > SRR9938304_clean_sample_merged.fasta
 #+end_src
 ** Add prefix and concatenate :
 #+begin_src bash :tangle day3_commands.sh
-# add prefixes CA, CB
+# Add prefixes CA, CB
 seqtk rename SRR089356_clean_sample_merged.fasta CA > prefix_SRR089356_clean_sample_merged.fasta
 seqtk rename SRR9938304_clean_sample_merged.fasta CB > prefix_SRR9938304_clean_sample_merged.fasta
 cat prefix* > CA_CB_final.fasta
