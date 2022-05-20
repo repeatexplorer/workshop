@@ -1,0 +1,58 @@
+* PRACTICAL TRAINING - DAY 1
+** Reduce the size of read files before uploading them to the Galaxy server
+    • Open terminal
+    • go to the directory with example data
+    #+begin_src bash
+cd ~/data/examples/
+    #+end_src
+    • randomly sample a subset of 100,000 reads from the files containing forward and reverse reads
+    #+begin_src bash
+seqtk sample -s 10 ERR413122_x_1.fastq.gz 100000 | gzip -c > ERR413122_x_1_sample.fastq.gz
+seqtk sample -s 10 ERR413122_x_2.fastq.gz 100000 | gzip -c > ERR413122_x_2_sample.fastq.gz	
+    #+end_src
+• NOTE – the seed must be the same for both files in order to retrieve complete pairs of paired-end reads
+• NOTE – different sets of reads can be sampled from the same files by changing seed (should be an integer number)
+
+** Protocol 3: development of satellite DNA probes for cytogenetic experiments using the TAREAN pipeline
+#+begin_src bash
+### Commands for TAREAN - probes
+cd ~/data/analyses/TAREAN
+
+cp -R ~/data/histories/protocol_3/seqclust/clustering/clusters/dir_CL0135 ./
+
+cd dir_CL0135/tarean
+
+cat consensus_dimer.fasta | emma -filter -osformat2 aln
+
+seaview consensus_dimer.fasta
+
+dotter consensus_dimer.fasta consensus_dimer.fasta
+
+cat consensus_dimer.fasta | seqret -filter -firstonly > 11_2_sc_0.69157_l_302_dimer.fasta
+
+cat 11_2_sc_0.69157_l_302_dimer.fasta | einverted -filter -threshold 0
+
+~/data/scripts/Design_probe_using_TAREAN_ppm.pl -h
+
+cat ppm_11mer_2.csv | ~/data/scripts/Design_probe_using_TAREAN_ppm.pl -l 50 -L 50 -F 50 -N 0.390 -t 52 -T 54 | sort -t$'\t' -k3,3n
+
+cat ppm_11mer_2.csv | ~/data/scripts/Design_probe_using_TAREAN_ppm.pl -l 40 -L 60 -F 50 -N 0.390 > ppm_11mer_2_oligonucleotides_Tm_01.csv
+
+cat ppm_11mer_2_oligonucleotides_Tm_01.csv | cut -f2 | grep -v "Sequence" > ppm_11mer_2_oligonucleotides_for_dnaMATE
+
+dnaMATE ppm_11mer_2_oligonucleotides_for_dnaMATE -s 0.39 -o 0.000001 | perl -pe 's/\s+/\t/' > ppm_11mer_2_oligonucleotides_Tm_02.csv
+
+
+### Commands for TAREAN - PCR primers
+cat 11_2_sc_0.69157_l_302_dimer.fasta | eprimer32 -filter -minsize 18 -maxsize 35 -mintm 56 -maxtm 58 -opttm 57 -task 1 -prange 303-304 -numreturn 500 -includedregion 30,380 | grep -v -P "^\s*$"
+
+cat 11_2_sc_0.69157_l_302_dimer.fasta | eprimer32 -filter -minsize 18 -maxsize 35 -mintm 56 -maxtm 58 -opttm 57 -task 1 -prange 303-304 -forwardinput CTTGAAGGCTGGTTCCGAA -reverseinput GAACTTCAAATATCTTGTGCTTATCA | grep -v -P "^\s*$"
+
+
+### Commands for TAREAN - blastn
+~/data/scripts/Extract_and_code_reads_from_TAREAN_CLs.pl -d ~/data/histories/protocol_3/seqclust/clustering/clusters > TAREAN_CLs_reads.fasta
+
+makeblastdb -in TAREAN_CLs_reads.fasta -input_type fasta -dbtype nucl
+
+blastn -task blastn -query 11_2_sc_0.69157_l_302_dimer.fasta -db TAREAN_CLs_reads.fasta -word_size 6 -evalue 10 -outfmt 6 | grep -v "dir_CL0135_"
+#+end_src
