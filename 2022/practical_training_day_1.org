@@ -13,6 +13,11 @@ seqtk sample -s 10 ERR413122_x_2.fastq.gz 100000 | gzip -c > ERR413122_x_2_sampl
 • NOTE – the seed must be the same for both files in order to retrieve complete pairs of paired-end reads
 • NOTE – different sets of reads can be sampled from the same files by changing seed (should be an integer number)
 
+** Protocol 1
+Link to Galaxy history: https://repeatexplorer-elixir.cerit-sc.cz/galaxy/u/kavonrtep/h/protocol-1--single-species
+** Protocol 2
+Link to Galaxy history: https://repeatexplorer-elixir.cerit-sc.cz/galaxy/u/kavonrtep/h/protocol-2--comparative-analysis
+
 ** Protocol 3: development of satellite DNA probes for cytogenetic experiments using the TAREAN pipeline
 #+begin_src bash
 ### Commands for TAREAN - probes
