@@ -1,8 +1,9 @@
 #+TITLE:Practical training -  day 3
 #+OPTIONS: toc:nil
 #+OPTIONS: author:nil
-* Installation of RepeatExplorer2
-** Installation of miniconda
+* Running RepeatExplorer2 from command line
+** Installation of RepeatExplorer2
+*** Installation of miniconda
 Download miniconda intaller. For more information see https://docs.conda.io/en/latest/miniconda.html
 
 #+begin_src bash :tangle day3_commands.sh
@@ -25,14 +26,14 @@ On prompt:
 - Confirm license and installation location
 - Activate initialization of Miniconda3
 - After installation, close and reopen terminal or just type ~bash~
-** Installation of Singularity
+*** Installation of Singularity
 
 #+begin_src bash :tangle day3_commands.sh
 conda create -n singularity -c conda-forge singularity=3.6.3
 #+end_src
 
 
-** Get RepeatExplorer2 singularity image:
+*** Get RepeatExplorer2 singularity image:
 singularity image is available in https://github.com/repeatexplorer/repex_tarean/releases
 #+begin_src bash :tangle day3_commands.sh
 conda activate singularity
@@ -52,8 +53,8 @@ wget https://bitbucket.org/petrnovak/repex_tarean/raw/devel/test_data/LAS_paired
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_test /data/LAS_paired_10k.fas
 #+end_src
 
-* Example of clustering including data pre-processing
-** Data:
+** Example of clustering including data pre-processing
+*** Data:
 Get data and check the quality of reads using FastQC program:
 #+begin_src bash :tangle day3_commands.sh
 # Clustering example 1
@@ -67,7 +68,7 @@ fastqc *.fastq.gz
 #+end_src
 When QC run finishes, inspect html reports.
 
-**  Quality filtering
+***  Quality filtering
 Use *Trimmomatic* program to remove low quality reads and trim read ends. Trimmomatic will be used in Pair-end mode. Trimmomatic options are:
 #+begin_src text
 TrimmomaticPE  [-threads threads] [-phred33 | -phred64] [-trimlog logFile] \
@@ -121,14 +122,14 @@ seqkit stats *fastq.gz
 fastqc *clean*.fastq.gz
 #+end_src
 
-** Sample to required coverage:
+*** Sample to required coverage:
 #+begin_src bash :tangle day3_commands.sh
 # Paired end read sampling:
 seqtk sample -s 10  SRR089356_1_clean.fastq.gz 5000 >  SRR089356_1_clean_sample.fastq
 seqtk sample -s 10  SRR089356_2_clean.fastq.gz 5000 >  SRR089356_2_clean_sample.fastq
 #+end_src
 
-** Interleaved pairs into single file:
+*** Interleaved pairs into single file:
 #+begin_src bash :tangle day3_commands.sh
 # Make interleaved FASTQ
 seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq seqtk  > SRR089356_clean_sample_merged.fastq
@@ -137,7 +138,7 @@ seqtk seq -A SRR089356_clean_sample_merged.fastq > SRR089356_clean_sample_merged
 #+end_src
 
 
-** run RepeatExplorer with default settings:
+*** run RepeatExplorer with default settings:
 #+begin_src bash :tangle day3_commands.sh
 # Run clustering with default settings
 cd ~/repeatexplorer
@@ -145,7 +146,7 @@ singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_
 #+end_src
 NOTE : current  directory (~$PWD~) is /data directory in singularity container.
 
-** Command line options:
+*** Command line options:
 #+begin_src text
   seqclust  [-h] [-p] [-A] [-t] [-l LOGFILE] [-m {float range 0.0..100.0}] [-M {0,float range 0.1..1}] [-o {float range 30.0..80.0}] [-c CPU]
                   [-s SAMPLE] [-P PREFIX_LENGTH] [-v OUTPUT_DIR] [-r MAX_MEMORY] [-d DATABASE DATABASE] [-C] [-k] [-a {2,3,4,5}]
@@ -226,10 +227,9 @@ NOTE : current  directory (~$PWD~) is /data directory in singularity container.
 - explain individual settings from help
 #+end_comment
 
+** Running comparative analysis
 
-* Running comparative analysis
-
-** data:
+*** data:
 
 #+begin_src bash :tangle day3_commands.sh
 # Get data from comparative analysis
@@ -243,7 +243,7 @@ wget  https://github.com/kavonrtep/example_data/raw/master/SRR089356_2.fastq.gz
 seqkit stats *.fastq.gz
 #+end_src
 
-** Quality control and filtering:
+*** Quality control and filtering:
 #+begin_src bash :tangle day3_commands.sh
 fastqc *.fastq.gz
 cp  /usr/share/trimmomatic/*.fa .
@@ -258,7 +258,7 @@ TrimmomaticPE -phred33 SRR9938304_1.fastq.gz SRR9938304_2.fastq.gz \
  ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 SLIDINGWINDOW:4:10 CROP:100 HEADCROP:10 MINLEN:90
 #+end_src
 
-** Sample to required coverage:
+*** Sample to required coverage:
 #+begin_src bash :tangle day3_commands.sh
 seqtk sample -s 10  SRR089356_1_clean.fastq.gz 5000 >  SRR089356_1_clean_sample.fastq
 seqtk sample -s 10  SRR089356_2_clean.fastq.gz 5000 >  SRR089356_2_clean_sample.fastq
@@ -267,7 +267,7 @@ seqtk sample -s 10  SRR9938304_1_clean.fastq.gz 5000 >  SRR9938304_1_clean_sampl
 seqtk sample -s 10  SRR9938304_2_clean.fastq.gz 5000 >  SRR9938304_2_clean_sample.fastq
 #+end_src
 
-** Interleave:
+*** Interleave:
 #+begin_src bash :tangle day3_commands.sh
 seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq seqtk  > SRR089356_clean_sample_merged.fastq
 seqtk mergepe SRR9938304_1_clean_sample.fastq SRR9938304_2_clean_sample.fastq seqtk  > SRR9938304_clean_sample_merged.fastq
@@ -275,7 +275,7 @@ seqtk mergepe SRR9938304_1_clean_sample.fastq SRR9938304_2_clean_sample.fastq se
 seqtk seq -A SRR089356_clean_sample_merged.fastq > SRR089356_clean_sample_merged.fasta
 seqtk seq -A SRR9938304_clean_sample_merged.fastq > SRR9938304_clean_sample_merged.fasta
 #+end_src
-** Add prefix and concatenate :
+*** Add prefix and concatenate :
 #+begin_src bash :tangle day3_commands.sh
 # Add prefixes CA, CB
 seqtk rename SRR089356_clean_sample_merged.fasta CA > prefix_SRR089356_clean_sample_merged.fasta
@@ -283,7 +283,7 @@ seqtk rename SRR9938304_clean_sample_merged.fasta CB > prefix_SRR9938304_clean_s
 cat prefix* > CA_CB_final.fasta
 #+end_src
 
-** Comparative clustering:
+*** Comparative clustering:
 #+begin_src bash  :tangle day3_commands.sh
 cd ~/repeatexplorer
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  --paired --prefix_length 2  -v /data/re_output_comparative /data/comparative/CA_CB_final.fasta
