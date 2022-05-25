@@ -1,0 +1,10 @@
+* JBrowse coordinates
+
+- ~5:1..26975502~ 
+
+- ~5:11035451..11065150~ 
+# filtered out - element with some insertion
+
+- ~3:15567681..15605740~
+  # gene in LTR??
+  
