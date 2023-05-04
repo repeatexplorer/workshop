@@ -57,7 +57,7 @@ the contents of the destination directory inside the container with the source
 directory from the host system. To avoid conflict, we bind unique directory path
 ~/data~ which is guarantied to be empty on ~repex_tarean~ singularity container.
 
-#+CAPTION; Binding directories to Singularity container
+#+CAPTION: Binding directories to Singularity container
 [[./container.svg]]
 
 # it will take several minutes 
