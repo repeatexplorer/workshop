@@ -1,39 +1,23 @@
-#+TITLE:Practical training -  day 3
-#+OPTIONS: toc:nil
-#+OPTIONS: author:nil
-* Running RepeatExplorer2 from command line
 ** Installation of RepeatExplorer2
-*** Installation of miniconda
-Download miniconda intaller. For more information see https://docs.conda.io/en/latest/miniconda.html
-
-#+begin_src bash :tangle day3_commands.sh
-# Download miniconda installer
-cd ~/Downloads
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-# Verify checksum
-sha256sum Miniconda3-latest-Linux-x86_64.sh
-# Checksum can be found on miniconda documentation : https://docs.conda.io/en/latest/miniconda.html
+This tutorial  assume that you have working conda/mamba environment. Mambaforge was installed using following command:
+#+begin_src bash
+# conda
+curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
+bash Mambaforge-$(uname)-$(uname -m).sh
 #+end_src
 
+See miniforge repository for details (https://github.com/conda-forge/miniforge)
 
-Run installer;
-#+begin_src bash :tangle day3_commands.sh
-# Install miniconda
-bash Miniconda3-latest-Linux-x86_64.sh
-bash  # To activate conda base env.
-#+end_src
-On prompt: 
-- Confirm license and installation location
-- Activate initialization of Miniconda3
-- After installation, close and reopen terminal or just type ~bash~
+
 *** Installation of Singularity
+# TODO e slide explaining how singlularity works
 
 #+begin_src bash :tangle day3_commands.sh
-conda create -n singularity -c conda-forge singularity=3.6.3
+mamba create -n singularity -c conda-forge singularity=3.6.3
 #+end_src
 
 
-*** Get RepeatExplorer2 singularity image:
+*** Get RepeatExplorer2 Singularity image:
 singularity image is available in https://github.com/repeatexplorer/repex_tarean/releases
 #+begin_src bash :tangle day3_commands.sh
 conda activate singularity
@@ -45,18 +29,37 @@ singularity build  --sandbox repex_tarean repex_tarean_0.3.8.sif
 singularity exec repex_tarean seqclust --help
 #+end_src
 
-
-*** Run clustering on test data:
+# dowloading can take while - 1 minute, building takes 1-2 minutes
+** Run clustering on test data:
 #+begin_src bash :tangle day3_commands.sh
 # Download small pair-end dataset:
 wget https://bitbucket.org/petrnovak/repex_tarean/raw/devel/test_data/LAS_paired_10k.fas
+# inspect data
+head LAS_paired_10k.fas
+seqkit stat LAS_paired_10k.fas
+# run repeatexplorer
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_test /data/LAS_paired_10k.fas
 #+end_src
 
+When you use the ~--bind~ flag with Singularity, it maps a directory on your host
+system to a directory inside the container. The syntax is ~--bind src:dest~, where
+~src~ is the source directory on the host system, and ~dest~ is the destination
+directory inside the container. ~${PWD}~ is variable which hold path to the
+current forking directory. As alternative to the above command, you can use:
 
+#+begin_src bash
+singularity exec -e --bind ${PWD}:${PWD} repex_tarean  seqclust  -p -v re_test /data/LAS_paired_10k.fas
+#+end_src
+In this setting directory path wil be same in the singularity contained and and
+the host. If there is a conflict in file paths (i.e., the same directory path
+exists both inside and outside of the container), the bind mount will overwrite
+the contents of the destination directory inside the container with the source
+directory from the host system. To avoid conflict, we bind unique directory path
+~/data~ which is guarantied to be empty on ~repex_tarean~ singularity container.
 
+[[./container.svg]]
 
-
+# it will take several minutes 
 ** Example of clustering including data pre-processing
 *** Data:
 Get data and check the quality of reads using FastQC program:
@@ -223,13 +226,11 @@ NOTE : current  directory (~$PWD~) is /data directory in singularity container.
                           To use this option diamond program must be installed in your PATH
 #+end_src
 
-
-
-
 #+begin_comment
 - show - hitsort file which is normaly deleted on RE server
 - explain individual settings from help
 #+end_comment
+
 
 ** Running comparative analysis
 
@@ -292,4 +293,3 @@ cat prefix* > CA_CB_final.fasta
 cd ~/repeatexplorer
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  --paired --prefix_length 2  -v /data/re_output_comparative /data/comparative/CA_CB_final.fasta
 #+end_src
-
