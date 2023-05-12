@@ -50,8 +50,8 @@ current forking directory. As alternative to the above command, you can use:
 #+begin_src bash
 singularity exec -e --bind ${PWD}:${PWD} repex_tarean  seqclust  -p -v re_test /data/LAS_paired_10k.fas
 #+end_src
-In this setting directory path wil be same in the singularity contained and and
-the host. If there is a conflict in file paths (i.e., the same directory path
+In this setting directory path will be the same in the singularity container and
+on the host. If there is a conflict in file paths (i.e., the same directory path
 exists both inside and outside of the container), the bind mount will overwrite
 the contents of the destination directory inside the container with the source
 directory from the host system. To avoid conflict, we bind unique directory path
@@ -61,7 +61,6 @@ directory from the host system. To avoid conflict, we bind unique directory path
 | *Sharing data between a host and Singularity container* |
 |[[./container.svg]]|
 ||
-
 
 # it will take several minutes 
 ** Example of clustering including data pre-processing
