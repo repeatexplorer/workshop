@@ -1,0 +1,32 @@
+* TideCluster
+
+#+begin_src bash
+cd ~/tidecluster/
+conda activate tidecluster
+
+# execute TideHunter
+
+TideCluster.py tidehunter -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6_default -c 4
+
+# run similarity-based clustering of the identified tandem repeats
+
+TideCluster.py clustering -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6_default -c 4
+
+# perform tandem repeat annotation using a reference database (should be RepeatMasker-formatted)
+
+TideCluster.py annotation -pr CEN6_default -l ~/Desktop/data/examples/reference_db_SATELLITES_Fabeae.RM_format -c 4
+
+# run the script updating names of selected clusters in gff3 file
+
+update_gff3.py -g CEN6_default_annotation.gff3 -t CEN6_default_annotation_refDB.csv -o CEN6_default_annotation_refDB.gff3
+
+# run TAREAN to get consensus sequences
+
+TideCluster.py tarean -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6_default -c 4
+
+
+# running all TideCluster steps automatically with custom settings (detection of TRs with short monomers)
+
+TideCluster.py run_all -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6_short_monomers -l ~/Desktop/data/examples/reference_db_SATELLITES_Fabeae.RM_format -c 4 -T "-p 10 -P 39 -c 5 -e 0.25"
+
+#+end_src
