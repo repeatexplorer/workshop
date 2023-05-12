@@ -10,3 +10,4 @@ This repository includes a supplementary training materials and scripts used dur
 # Workshop 2023
 
 - [Practical training - day 1](./2023/practical_training_day_1.org) 
+- [Practical training - day 2](./2023/practical_training_day_2.org) 
