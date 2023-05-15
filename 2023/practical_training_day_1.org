@@ -309,7 +309,7 @@ temporary data, unless you specify otherwise. To adjust this default setting,
 you can define the ~TEMP~ variable and select your desired directory using the ~--bind~ option. This is demonstrated in the command below:
 
 #+begin_src bash
-singularity exec --no-home --env TEMP=/tmp  --bind /mnt/tmp:/tmp  --bind ${PWD}:/data/  repex_tarean  seqclust  -p -v re_test /data/LAS_paired_10k.fas
+singularity exec --no-home --env TEMP=/tmp  --bind /mnt/tmp:/tmp  --bind ${PWD}:/data/  repex_tarean  seqclust  -p -v /data/re_test /data/LAS_paired_10k.fas
 #+end_src
 
 In this example, the ~/mnt/tmp~ directory on your system will serve as the storage
