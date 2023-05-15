@@ -40,13 +40,15 @@ seqkit stat LAS_paired_10k.fas
 # run repeatexplorer
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  -p -v /data/re_test /data/LAS_paired_10k.fas
 #+end_src
+A Singularity container is a portable, self-contained unit that contains
+everything needed to run a program. ~--bind ${PWD}:/data/~ is creating a bridge
+between a folder on your system (~${PWD}~) and a folder inside the container
+(~/data/~). The syntax is ~--bind src:dest~, where ~src~ is the source directory on
+the host system, and ~dest~ is the destination directory inside the container. The
+~${PWD}~ part represents the current working directory you're in.
 
-When you use the ~--bind~ flag with Singularity, it maps a directory on your host
-system to a directory inside the container. The syntax is ~--bind src:dest~, where
-~src~ is the source directory on the host system, and ~dest~ is the destination
-directory inside the container. ~${PWD}~ is variable which hold path to the
-current forking directory. As alternative to the above command, you can use:
-
+As alternative to the above command, you can also make the paths the same inside
+and outside the container, like this:
 #+begin_src bash
 singularity exec -e --bind ${PWD}:${PWD} repex_tarean  seqclust  -p -v re_test /data/LAS_paired_10k.fas
 #+end_src
@@ -79,7 +81,7 @@ fastqc *.fastq.gz
 When QC run finishes, inspect html reports.
 
 ***  Quality filtering
-Use *Trimmomatic* program to remove low quality reads and trim read ends. Trimmomatic will be used in Pair-end mode. Trimmomatic options are:
+Use *Trimmomatic* program to remove low quality reads and trim read ends. Trimmomatic will be used in paired-end mode. Trimmomatic options are:
 #+begin_src text
 TrimmomaticPE  [-threads threads] [-phred33 | -phred64] [-trimlog logFile] \
 paired_output_1 unpaired_output_1 paired_output_2 unpaired_output_2 step_1 ...
@@ -142,7 +144,7 @@ seqtk sample -s 10  SRR089356_2_clean.fastq.gz 5000 >  SRR089356_2_clean_sample.
 *** Interleaved pairs into single file:
 #+begin_src bash :tangle day3_commands.sh
 # Make interleaved FASTQ
-seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq seqtk  > SRR089356_clean_sample_merged.fastq
+seqtk mergepe SRR089356_1_clean_sample.fastq SRR089356_2_clean_sample.fastq  > SRR089356_clean_sample_merged.fastq
 # Convert to FASTA
 seqtk seq -A SRR089356_clean_sample_merged.fastq > SRR089356_clean_sample_merged.fasta
 #+end_src
@@ -296,3 +298,21 @@ cat prefix* > CA_CB_final.fasta
 cd ~/repeatexplorer
 singularity exec -e --bind ${PWD}:/data/ repex_tarean  seqclust  --paired --prefix_length 2  -v /data/re_output_comparative /data/comparative/CA_CB_final.fasta
 #+end_src
+
+** Specifying TEMP directory:
+During its operation, RepeatExplorer produces a significant number of temporary
+files. It's important to ensure that the directory designated for these
+temporary files has sufficient storage capacity.
+
+Singularity, by default, uses the ~/tmp~ directory on your host system to store
+temporary data, unless you specify otherwise. To adjust this default setting,
+you can define the ~TEMP~ variable and select your desired directory using the ~--bind~ option. This is demonstrated in the command below:
+
+#+begin_src bash
+singularity exec --no-home --env TEMP=/tmp  --bind /mnt/tmp:/tmp  --bind ${PWD}:/data/  repex_tarean  seqclust  -p -v re_test /data/LAS_paired_10k.fas
+#+end_src
+
+In this example, the ~/mnt/tmp~ directory on your system will serve as the storage
+area for temporary files. Please ensure that this directory has sufficient storage to
+accommodate the temporary files generated during the operation.
+
