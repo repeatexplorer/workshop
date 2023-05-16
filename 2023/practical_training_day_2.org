@@ -30,3 +30,99 @@ TideCluster.py tarean -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6_
 TideCluster.py run_all -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6_short_monomers -l ~/Desktop/data/examples/reference_db_SATELLITES_Fabeae.RM_format -c 4 -T "-p 10 -P 39 -c 5 -e 0.25"
 
 #+end_src
+
+* Probe design
+
+#+begin_src bash
+    • Move to the folder “probes“ and copy consensus sequences of TRC_15 from the output of tidecluster
+# move to a folder ~/probes/
+ cd ~/probes/
+ 
+# copy monomer consensus sequences to the active folder
+ cp ~/tidecluster/CEN6_default_tarean/TRC_15.fasta_tarean/consensus.fasta TRC_15_consensus.fasta
+ 
+# copy dimer consensus sequences to the active folder
+ cp ~/tidecluster/CEN6_default_tarean/TRC_15.fasta_tarean/consensus_dimer.fasta TRC_15_consensus_dimer.fasta
+        
+        
+# Select only those consensus sequences that have k-mer coverage score ≤ 0.1 (= first 8 sequences)
+ cat TRC_15_consensus_dimer.fasta | awk "/^>/ {n++} n>8 {exit} {print}" > TRC_15_consensus_dimer_f0.1.fasta
+ 
+# Compare the sequences using dotter
+ dotter TRC_15_consensus_dimer_f0.1.fasta TRC_15_consensus_dimer_f0.1.fasta
+ 
+# Select the first, i.e. the most representative monomer consensus sequence 
+ cat TRC_15_consensus.fasta | awk "/^>/ {n++} n>1 {exit}{print}" > 19_1_sc_0.764035_l_1213_monomer.fasta
+
+# Select the first, i.e. the most representative dimer consensus sequence 
+ cat TRC_15_consensus_dimer.fasta | awk "/^>/ {n++} n>1 {exit}{print}" > 19_1_sc_0.764035_l_1213_dimer.fasta
+ 
+# Compare the best monomer sequence with the entire arrays of TRC_15
+ dotter 19_1_sc_0.764035_l_1213_monomer.fasta ~/tidecluster/CEN6_default_tarean/fasta/TRC_15.fasta
+ 
+# Identify regions that are not suitable for probes (inverted repeats and short simple repeats)
+ dotter 19_1_sc_0.764035_l_1213_monomer.fasta 19_1_sc_0.764035_l_1213_monomer.fasta
+ 
+# Find inverted repeats
+ cat 19_1_sc_0.764035_l_1213_monomer.fasta | einverted -filter -threshold 0
+
+# Find low-complexity sequences
+ dustmasker -level 30 -in 19_1_sc_0.764035_l_1213_monomer.fasta
+ 
+##### Design oligonucleotide probes using perl script
+
+# Read help
+ ~/Desktop/data/scripts/Design_probe_using_TAREAN_ppm_01.pl -h
+ 
+# Copy the input csv file from the TAREAN folder 
+ cp ~/tidecluster/CEN6_default_tarean/TRC_15.fasta_tarean/ppm_19mer_1.csv ./
+ 
+# Run the perl scripts 
+	# Example 1: get all oligonucleotides in the length range (50-60 nt) and print the output on the screen. The coordinates in the parameter “-I” are from einverted and  dustmasker
+		cat ppm_19mer_1.csv | ~/Desktop/data/scripts/Design_probe_using_TAREAN_ppm_01.pl -l 50 -L 60 -F 50 -N 0.390 -I "258-293 367-332 722-861 875-906 1201-1211"
+		
+	# Example 2: get all oligonucleotides in the length range (50-60 nt) and print the output to a file
+		cat ppm_19mer_1.csv | ~/Desktop/data/scripts/Design_probe_using_TAREAN_ppm_01.pl -l 50 -L 60 -F 50 -N 0.390 -I "258-293 367-332 722-861 875-906 1201-1211" > 19_1_sc_0.764035_l_1213_probes50-60.tsv
+		
+	# Example 3: all oligonucleotides in the specified range of length (50-60 nt) and Tm (51-53 °C), print the output on the screen, and sort it based on Coverage_score
+		cat ppm_19mer_1.csv | ~/Desktop/data/scripts/Design_probe_using_TAREAN_ppm_01.pl -l 50 -L 60 -F 50 -N 0.390 -t 51 -T 53 -I "258-293 367-332 722-861 875-906 1201-1211" | grep -v "Ignore!" | sort -k3,3n
+		
+# Save the selected probe sequence to file (use shift-ctrl-c to copy the sequence)
+ nano 19_1_sc_0.764035_l_1213_selected_probe.fasta 
+ # Note: use use shift-ctrl-v to paste the sequence into the file, manually add the name line (>19_1_sc_0.764035_l_1213_selected_probe); use ctrl-o save the file and ctrl-x to close the file
+ 
+##### Verify that the probe has no similarity to other [tandem] repeats
+
+# Get the sequences of all tandem repeat arrays from tidecluster
+ cat ~/tidecluster/CEN6_default_tarean/fasta/TRC_*.fasta > TRC_arrays_all.fasta
+ 
+# Make blast database
+ makeblastdb -in TRC_arrays_all.fasta -input_type fasta -dbtype nucl
+ 
+# Run blastn without subsequent filtering of TRC_15 array sequences
+ blastn -db TRC_arrays_all.fasta -query 19_1_sc_0.764035_l_1213_selected_probe.fasta -word_size 20 -outfmt 6
+ 
+# Get names of TCR_15 array sequences TCR15
+cat ~/tidecluster/CEN6_default_tarean/fasta/TRC_15.fasta | grep ">"
+  
+# Run blastn with subsequent filtering of TRC_15 array sequences
+ blastn -db TRC_arrays_all.fasta -query 19_1_sc_0.764035_l_1213_selected_probe.fasta -word_size 20 -outfmt 6 | grep -v -P "CEN6_ver_220406_87863497_87875968|CEN6_ver_220406_87897437_87941877"
+ 
+##### For probes ≤ 50, estimate the Tm using dnaMATE
+
+# Use the perl script to analyze all 35-50mers
+ cat ppm_19mer_1.csv | ~/Desktop/data/scripts/Design_probe_using_TAREAN_ppm_01.pl -l 35 -L 50 -F 0 -N 0.390 -I "258-293 367-332 722-861 875-906 1201-1211" | sort -k1,1n > 19_1_sc_0.764035_l_1213_probes35-50.tsv
+ 
+# Prepare input for dnaMATE (= extract only the sequnce column without heading)
+ cat 19_1_sc_0.764035_l_1213_probes35-50.tsv | cut -f2 | grep -v "Sequence" > 19_1_sc_0.764035_l_1213_probes35-50_for_dnaMATE.txt
+ 
+# Run dnaMATE
+ dnaMATE 19_1_sc_0.764035_l_1213_probes35-50_for_dnaMATE.txt -s 0.39 -o 0.000001 > 19_1_sc_0.764035_l_1213_probes35-50_dnaMATE_output.tsv
+ # Note: -o is a probe concentration [M] and -s is a salt concentration [M]. dnaMATE is also available at http://melolab.org/dnaMATE/tm-pred.html.
+
+# Merge the outputs of the perl script and dnaMATE horizontally
+ paste 19_1_sc_0.764035_l_1213_probes35-50.tsv 19_1_sc_0.764035_l_1213_probes35-50_dnaMATE_output.tsv > 19_1_sc_0.764035_l_1213_probes35-50_mergedTm.tsv
+
+
+
+#+end_src
