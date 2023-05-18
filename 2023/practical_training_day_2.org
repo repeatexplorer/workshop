@@ -35,7 +35,6 @@ TideCluster.py run_all -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6
 
 #+begin_src bash
 # Move to the folder “probes“ and copy consensus sequences of TRC_15 from the output of tidecluster
-
 # move to a folder ~/probes/
  cd ~/probes/
  
@@ -47,16 +46,16 @@ TideCluster.py run_all -f ~/Desktop/data/examples/CEN6_ver_220406.fasta -pr CEN6
         
         
 # Select only those consensus sequences that have k-mer coverage score ≤ 0.1 (= first 8 sequences)
- cat TRC_15_consensus_dimer.fasta | awk "/^>/ {n++} n>8 {exit} {print}" > TRC_15_consensus_dimer_f0.1.fasta
+ seqkit head -n 8 TRC_15_consensus_dimer.fasta > TRC_15_consensus_dimer_f0.1.fasta
  
 # Compare the sequences using dotter
  dotter TRC_15_consensus_dimer_f0.1.fasta TRC_15_consensus_dimer_f0.1.fasta
  
 # Select the first, i.e. the most representative monomer consensus sequence 
- cat TRC_15_consensus.fasta | awk "/^>/ {n++} n>1 {exit}{print}" > 19_1_sc_0.764035_l_1213_monomer.fasta
+ seqkit head -n 1 TRC_15_consensus.fasta > 19_1_sc_0.764035_l_1213_monomer.fasta
 
 # Select the first, i.e. the most representative dimer consensus sequence 
- cat TRC_15_consensus_dimer.fasta | awk "/^>/ {n++} n>1 {exit}{print}" > 19_1_sc_0.764035_l_1213_dimer.fasta
+ seqkit head -n 1 TRC_15_consensus_dimer.fasta > 19_1_sc_0.764035_l_1213_dimer.fasta
  
 # Compare the best monomer sequence with the entire arrays of TRC_15
  dotter 19_1_sc_0.764035_l_1213_monomer.fasta ~/tidecluster/CEN6_default_tarean/fasta/TRC_15.fasta

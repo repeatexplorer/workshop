@@ -1,3 +1,8 @@
+#+OPTIONS: toc:nil num:nil
+** Protocol 1
+Link to Galaxy history: [[https://repeatexplorer-elixir.cerit-sc.cz/galaxy/u/kavonrtep/h/protocol-1--single-species][https://repeatexplorer-elixir.cerit-sc.cz/galaxy/u/kavonrtep/h/protocol-1--single-species]]
+** Protocol 2
+Link to Galaxy history: [[https://repeatexplorer-elixir.cerit-sc.cz/galaxy/u/kavonrtep/h/protocol-2--comparative-analysis][https://repeatexplorer-elixir.cerit-sc.cz/galaxy/u/kavonrtep/h/protocol-2--comparative-analysis]]
 ** Installation of RepeatExplorer2
 This tutorial  assume that you have working conda/mamba environment. Mambaforge was installed using following command:
 #+begin_src bash
@@ -59,10 +64,10 @@ the contents of the destination directory inside the container with the source
 directory from the host system. To avoid conflict, we bind unique directory path
 ~/data~ which is guarantied to be empty on ~repex_tarean~ singularity container.
 
-#+CAPTION: Binding directories to Singularity container
-| *Sharing data between a host and Singularity container* |
-|[[./container.svg]]|
-||
+ *Sharing data between a host and Singularity container*:
+ #+ATTR_ORG: :width 300px 
+ [[./container.svg]]
+
 
 # it will take several minutes 
 ** Example of clustering including data pre-processing
