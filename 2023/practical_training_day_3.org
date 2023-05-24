@@ -1,4 +1,4 @@
 * REPET pipeline
 
-https://forgemia.inra.fr/urgi-anagen/wiki-repet/-/wikis/tutorial-with-Docker-image-of-REPET
+https://forgemia.inra.fr/urgi-anagen/wiki-repet/-/wikis/tutorial-with-Docker-image-of-REPET-at-RepeatExplorer-Workshop
 
