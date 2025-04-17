@@ -1,0 +1,9 @@
+genome_fasta: /mnt/ceph/454_data/Pisum_assembly_ver_2/assembly/230812_release_3.1/GENOME/cameor_v2.fasta
+output_dir: RepeatAnnotations
+custom_library: /mnt/ceph/454_data/Pisum_pangenome/analysis/RM_database_for_container/RM_lib_classII_LINE_para_rDNA.fasta
+tandem_repeat_library: /mnt/ceph/454_data/vicieae/databases/satellites/db/FabTR_all_sequences_231010.db.RM_format
+# posible values are : sensitive, default, quick,
+# if missing, default is used
+repeatmasker_sensitivity: default
+# possible values are: True, False, if missing, True is used
+reduce_library: True
