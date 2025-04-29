@@ -12,3 +12,9 @@ This repository includes a supplementary training materials and scripts used dur
 - [Practical training - day 1](./2023/practical_training_day_1.org) 
 - [Practical training - day 2](./2023/practical_training_day_2.org) 
 - [Practical training - day 3](./2023/practical_training_day_3.org) 
+
+
+# Workshop 2025
+
+- [Practical training - day 1](./2025/practical_training_day_1.md)
+- [Practical training - day 2](./2025/practical_training_day_2.md)
