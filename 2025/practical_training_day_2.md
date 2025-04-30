@@ -26,18 +26,6 @@ elements in genomic sequences.
 | Configuration file for annotation pipeline    | YAML  | `/mnt/data/config.yaml`                                   |
 | Singularity container for annotation pipeline | SIF   | `/mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif` |
 
-## Configuration file structure
-
-```yaml
-genome_fasta: /mnt/data/test_data/tiny_pea.fasta
-output_dir: Repeat_Annotations
-custom_library: /mnt/data/test_data/RM_custom_library.fasta
-tandem_repeat_library: /mnt/data/test_data/Tandem_repeat_library.fasta
-```
-
-> **Note**: Use absolute paths for all files in the configuration file. The pipeline will
-> create a directory named `Repeat_Annotations` in the current working directory to store
-> the output files.
 
 The pipeline supports supplying a additional custom repeat library via the
 optional `custom_library`
@@ -92,4 +80,69 @@ DANTE_TIR—because DANTE_TIR is still experimental. If you also need to annotat
 transposons, you must supply your own custom library. We recommend generating that library
 with the standalone DANTE_TIR pipeline and then manually curating its entries to minimize
 false-positive annotations. Alternatively, you can use Class II transposon clusters
-obtained via RepeatExplorer2. Library of rDNA sequences is built-in pipeline. 
+obtained via RepeatExplorer2. Library of rDNA sequences is built-in pipeline. If Class II
+custom library is provided, the pipeline uses this library to identify LTR-RT elements
+with potential Class II insertions. Such elements are not used in similarity-based
+annotation.
+
+## Pipeline steps
+
+- DANTE annotation, DANTE output filtering
+- DANTE_LTR annotation
+- Annotation of tandem repeats using TideCluster
+- Annotation of tandem repeats using custom library.
+- Building custom libraries for RepeatMasker using DANTE_LTR and TideCluster outputs and custom
+  libraries
+- Library reduction (optional)
+- RepeatMasker annotation of dispersed repeats
+- RepeatMasker annotation of tandem repeats
+- Reconciliation of RepeatMasker outputs and tandem repeat annotations
+- Coverage track generation
+
+
+## Running the Repeat Annotation Pipeline
+
+### Pre-requisites
+- Singularity installed (available in singularity conda package)
+- Pipeline singularity container (DOI: https://doi.org/10.5281/zenodo.15234515) can be downloaded
+from: https://zenodo.org/records/15234516/files/assembly_repeat_annotation_pipeline_0.6.7.sif?download=1
+
+### Setup
+To run the pipeline, you need to create a configuration file named `config.yaml`. This file should contain the following parameters:
+
+```yaml
+genome_fasta: /mnt/data/test_data/tiny_pea.fasta
+output_dir: output
+custom_library: /mnt/data/test_data/RM_custom_library.fasta
+tandem_repeat_library: /mnt/data/test_data/Tandem_repeat_library.fasta
+```
+
+Additional optional parameters are
+```yaml
+repeatmasker_sensitivity: default # posible values are : sensitive, default, quick,
+reduce_library: True # possible values are: True, False, if missing, True is used
+```
+
+
+> **Note**: Use absolute paths for all files in the configuration file. The pipeline will
+> create a directory named `Repeat_Annotations` in the current working directory to store
+> the output files.
+
+### Running the pipeline
+
+```bash
+conda activate singularity
+cd ~/Repeat_Annotations
+singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif -c /mnt/data/config.yaml -t 10
+# the running time is about 1 hour 
+```
+
+### Expected running times
+
+- *Filipendula ulmaria* (275 Mb) - 56 min on 20 CPU, 256 GB RAM
+- *Ailanthus altissima* assembly (0.94 Gb): ~ 5 hrs on 20 CPU, 256 GB RAM
+- *Ballota nigra* assembly (1.2 Gb) - 9 hrs on 20 CPU, 256 GB RAM
+- *P. sativum* assembly (4.2 Gb):  ~ 4 days on 24 CPU, 256 GB RAM 
+
+## Output data structure
+

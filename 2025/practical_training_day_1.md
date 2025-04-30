@@ -1,22 +1,22 @@
-
 # Input Data
 
-| Description                                  | Type  | File Name / Location                                    |
-|----------------------------------------------|-------|----------------------------------------------------------|
-| Genome assembly for tandem repeat annotation | FASTA | `/mnt/data/tiny_pea.fasta`                               |
-| Tandem repeat library                        | FASTA | `/mnt/data/Tandem_repeat_library.fasta`                  |
-| RepeatMasker custom library                  | FASTA | `/mnt/data/RM_custom_library.fasta`                      |
-| Configuration file for annotation pipeline   | YAML  | `/mnt/data/config.yaml`                                  |
-| Singularity container for annotation pipeline| SIF   | `/mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif`|
+| Description                                   | Type  | File Name / Location                                      |
+|-----------------------------------------------|-------|-----------------------------------------------------------|
+| Genome assembly for tandem repeat annotation  | FASTA | `/mnt/data/tiny_pea.fasta`                                |
+| Tandem repeat library                         | FASTA | `/mnt/data/Tandem_repeat_library.fasta`                   |
+| RepeatMasker custom library                   | FASTA | `/mnt/data/RM_custom_library.fasta`                       |
+| Configuration file for annotation pipeline    | YAML  | `/mnt/data/config.yaml`                                   |
+| Singularity container for annotation pipeline | SIF   | `/mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif` |
 
 # Example Analysis on Full Data (*P. sativum* Cameor v2 Assembly)
 
-| Description                     | Directory                                    |
-|---------------------------------|----------------------------------------------|
-| DANTE analysis                  | `/mnt/data/example_analyses/DANTE`           |
-| DANTE_LTR analysis              | `/mnt/data/example_analyses/DANTE_LTR`       |
-| DANTE_TIR analysis              | `/mnt/data/example_analyses/DANTE_TIR`       |
-| Full repeat annotation pipeline | `/mnt/data/example_analyses/RepeatAnnotations`|
+| Description                     | Directory                                      |
+|---------------------------------|------------------------------------------------|
+| TideCluster analysis            | `/mnt/data/example_analyses/TideCluster`       |
+| DANTE analysis                  | `/mnt/data/example_analyses/DANTE`             |
+| DANTE_LTR analysis              | `/mnt/data/example_analyses/DANTE_LTR`         |
+| DANTE_TIR analysis              | `/mnt/data/example_analyses/DANTE_TIR`         |
+| Full repeat annotation pipeline | `/mnt/data/example_analyses/RepeatAnnotations` |
 
 # Conda Environments
 
@@ -49,13 +49,15 @@ mamba create -n tidecluster -c conda-forge -c bioconda -c petrnovak tidecluster
 
 # Singularity Container for Repeat Annotation
 
-The Singularity container (DOI: https://doi.org/10.5281/zenodo.15234515) can be downloaded from:
+The Singularity container (DOI: https://doi.org/10.5281/zenodo.15234515) can be downloaded
+from:
 
 https://zenodo.org/records/15234516/files/assembly_repeat_annotation_pipeline_0.6.7.sif?download=1
 
 # TideCluster
 
-> **Note:** The tool is under development; see [TideCluster GitHub](https://github.com/kavonrtep/TideCluster) for updates.
+> **Note:** The tool is under development;
+> see [TideCluster GitHub](https://github.com/kavonrtep/TideCluster) for updates.
 
 ## Installation (do not run; already installed)
 
@@ -94,11 +96,11 @@ mamba create -n tidecluster -c conda-forge -c bioconda -c petrnovak tidecluster
 1. Launch IGV.
 2. **Genomes → Load Genome from File** → select `/mnt/data/tiny_pea.fasta`.
 3. **File → Load from File** → select:
-   - `~/tidecluster/tiny_pea_default_tidehunter.gff3`
-   - `~/tidecluster/tiny_pea_default_chunks.bed`
+    - `~/tidecluster/tiny_pea_default_tidehunter.gff3`
+    - `~/tidecluster/tiny_pea_default_chunks.bed`
 4. Right-click tracks to set:
-   - `*_chunks.bed` → **Squished**
-   - `*_tidehunter.gff3` → **Expanded**
+    - `*_chunks.bed` → **Squished**
+    - `*_tidehunter.gff3` → **Expanded**
 5. **File → Save Session…**
 
 ## Clustering of Tandem Repeats
@@ -111,7 +113,7 @@ TideCluster.py clustering \
 ```
 
 - Inspect results in IGV:
-  - **File → Load from File** → select `~/tidecluster/tiny_pea_default_clustering.gff3`.
+    - **File → Load from File** → select `~/tidecluster/tiny_pea_default_clustering.gff3`.
 
 ## Annotation Using Custom Reference Library
 
@@ -123,7 +125,7 @@ TideCluster.py annotation \
 ```
 
 - Inspect results in IGV:
-  - **File → Load from File** → select `~/tidecluster/tiny_pea_default_annotation.gff3`.
+    - **File → Load from File** → select `~/tidecluster/tiny_pea_default_annotation.gff3`.
 
 ## Update GFF3 to Show Annotations from the Custom Library
 
@@ -141,7 +143,8 @@ update_gff3.py \
 ```
 
 - Inspect results in IGV:
-  - **File → Load from File** → select `~/tidecluster/tiny_pea_default_annotation_refDB.gff3`.
+    - **File → Load from File** →
+      select `~/tidecluster/tiny_pea_default_annotation_refDB.gff3`.
 
 ## Consensus Sequence Generation with TAREAN
 
@@ -156,7 +159,8 @@ TideCluster.py tarean \
 
 ## Automatic Pipeline Execution (Short Monomers)
 
-*In this example, we demonstrate automatic execution of all analysis steps with custom settings to detect short monomer repeats.*
+*In this example, we demonstrate automatic execution of all analysis steps with custom
+settings to detect short monomer repeats.*
 
 ```bash
 TideCluster.py run_all \
@@ -168,11 +172,12 @@ TideCluster.py run_all \
 ```
 
 - Inspect results in IGV:
-  - **File → Load from File** → select:
-    - `~/tidecluster/tiny_pea_short_monomers_tidehunter.gff3`
-    - `~/tidecluster/tiny_pea_short_monomers_annotation.gff3`
+    - **File → Load from File** → select:
+        - `~/tidecluster/tiny_pea_short_monomers_tidehunter.gff3`
+        - `~/tidecluster/tiny_pea_short_monomers_annotation.gff3`
 
-> **Note:** No TAREAN output is generated if no repeat family passes the 50 kb total length cutoff.
+> **Note:** No TAREAN output is generated if no repeat family passes the 50 kb total
+> length cutoff.
 
 # Annotation of Protein Domains with DANTE
 
@@ -191,7 +196,9 @@ dante --version
 dante_ltr --version
 ```
 
-> **Note:** DANTE_LTR versions up to 0.3.5.3 are compatible with REXdb Viridiplantae v3.0. Versions ≥4.0.1 support REXdb Viridiplantae v3.0 and v4.0. DANTE versions up to 0.1.9 include REXdb Viridiplantae 3.0; versions ≥0.2.0 include REXdb Viridiplantae 4.0.
+> **Note:** DANTE_LTR versions up to 0.3.5.3 are compatible with REXdb Viridiplantae v3.0.
+> Versions ≥4.0.1 support REXdb Viridiplantae v3.0 and v4.0. DANTE versions up to 0.1.9
+> include REXdb Viridiplantae 3.0; versions ≥0.2.0 include REXdb Viridiplantae 4.0.
 
 ```bash
 mkdir ~/te_annotation
@@ -201,9 +208,12 @@ dante -q $GENOME -o DANTE.gff3 -c 15
 # This step takes about 6 minutes
 ```
 
-> **Note:** DANTE is optimized for genome assemblies. For many short sequences, use `-S (--short_reads)`.
+> **Note:** DANTE is optimized for genome assemblies. For many short sequences,
+> use `-S (--short_reads)`.
 
-DANTE.gff3 contains detected protein domain annotations and can be used as input for DANTE_LTR and DANTE_TIR. For phylogenetic analyses, filter domains using `dante_gff_output_filtering.py`.
+DANTE.gff3 contains detected protein domain annotations and can be used as input for
+DANTE_LTR and DANTE_TIR. For phylogenetic analyses, filter domains
+using `dante_gff_output_filtering.py`.
 
 ### Example of Filtering DANTE Output
 
@@ -215,6 +225,7 @@ dante_gff_output_filtering.py --dom_gff DANTE.gff3 \
 ```
 
 Default thresholds:
+
 - Max interruptions: 3 (per 100 AA)
 - Min alignment length proportion: 0.8
 - Max alignment length proportion: 1.2
@@ -266,15 +277,15 @@ dante_ltr -g DANTE.gff3 -s $GENOME -o DANTE_LTR -c 5 -M 1
 
 - `DANTE_LTR.gff3`: Annotated elements.
 - Extracted DNA sequences:
-  - `DANTE_LTR_D.fasta`  (partial elements without LTRs)
-  - `DANTE_LTR_DL.fasta` (elements with LTRs and protein domains)
-  - `DANTE_LTR_DLP.fasta` (elements with LTRs, domains, PBS)
-  - `DANTE_LTR_DLT.fasta` (elements with LTRs, domains, TSD)
-  - `DANTE_LTR_DLTP.fasta` (complete elements with LTRs, domains, PBS, TSD)
+    - `DANTE_LTR_D.fasta`  (partial elements without LTRs)
+    - `DANTE_LTR_DL.fasta` (elements with LTRs and protein domains)
+    - `DANTE_LTR_DLP.fasta` (elements with LTRs, domains, PBS)
+    - `DANTE_LTR_DLT.fasta` (elements with LTRs, domains, TSD)
+    - `DANTE_LTR_DLTP.fasta` (complete elements with LTRs, domains, PBS, TSD)
 - Summaries:
-  - `DANTE_LTR_statistics.csv`
-  - `DANTE_LTR_summary.csv`
-  - `DANTE_LTR_summary.html`
+    - `DANTE_LTR_statistics.csv`
+    - `DANTE_LTR_summary.csv`
+    - `DANTE_LTR_summary.html`
 
 ## Creating an LTR-RT Library for RepeatMasker
 
@@ -307,7 +318,8 @@ DANTE_LTR_library/
 
 # Annotation of DNA Transposons with DANTE_TIR
 
-> **Note:** The tool is under development; see [DANTE_TIR GitHub](https://github.com/kavonrtep/dante_tir) for updates.
+> **Note:** The tool is under development;
+> see [DANTE_TIR GitHub](https://github.com/kavonrtep/dante_tir) for updates.
 
 ## Prerequisites
 
@@ -325,10 +337,10 @@ dante_tir.py -g DANTE.gff3 -f $GENOME -o DANTE_TIR -c 10
 
 - `DANTE_TIR_final.gff3` (final annotations)
 - Extracted DNA sequences:
-  - `DANTE_TIR_EnSpm_CACTA.fasta`
-  - `DANTE_TIR_MuDR_Mutator.fasta`
-  - `DANTE_TIR_hAT.fasta`
-  - `DANTE_TIR_final.fasta` (all elements)
+    - `DANTE_TIR_EnSpm_CACTA.fasta`
+    - `DANTE_TIR_MuDR_Mutator.fasta`
+    - `DANTE_TIR_hAT.fasta`
+    - `DANTE_TIR_final.fasta` (all elements)
 - `TIR_classification_summary.txt` (tabular summary)
 
 # Exploration of Results in IGV
