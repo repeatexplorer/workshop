@@ -187,10 +187,24 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 ├── Repeat_Annotation_NoSat_split_by_class_bigwig/
 │         ├──                                       # BigWig files for each repeat class
 │         ├──          
+│
+├── All_Ty1_Copia_RepeatMasker.gff3              |
+├── All_Ty3_Gypsy_RepeatMasker.gff3              |
+├── Low_complexity_RepeatMasker.gff3             | Similarity basesd annotations
+├── Mobile_elements_RepeatMasker.gff3            |  (with RepeatMasker)
+├── Simple_repeats_RepeatMasker.gff3             |
+├── Tandem_repeats_RepeatMasker.gff3             |
+├── rDNA_RepeatMasker.gff3                       |
+│
+├── DANTE_filtered.gff3                            | 
+├── DANTE_LTR.gff3                                 | Structure based annotations
+├── Tandem_repeats_TideCluster_annotated.gff3      |
+├── Tandem_repeats_TideCluster.gff3                |
+│
 ├── all_repeats_for_masking.bed       # Merged BED of all repeats for masking steps
 ├── gaps_10plus.bed                   # Coordinates of gaps ≥10 Ns in the assembly
-├── summary_statistics.csv            # Per-class summary counts and coverage
-├── summary_plots.pdf                 # PDF report of repeat composition and density
+├── summary_statistics.csv            # Per-repeat class genome proportions
+├── summary_plots.pdf                 # PDF report with plots of repeat distribution along chromosomes
 ├── TideCluster_report.html           # Graphical HTML summary of TideCluster results
 └── DANTE_LTR_report.html             # Graphical summary report of LTR-RT detection
 ```
@@ -199,3 +213,4 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 > - BigWig files (*.bw) are generated for both RepeatMasker and TideCluster annotations at 10Kb and 100Kb resolution.
 > - Per-class GFF3 splits (e.g., All_Ty1_Copia.gff3, Simple_repeats.gff3) reside under Repeat_Annotation_NoSat_split_by_class_gff3/
 > - Top level directory contains symbolic links to the most important annotation files
+> - Tandem repeat annotations are available as structure-based (TideCluster) and similarity-based (RepeatMasker) annotations.
