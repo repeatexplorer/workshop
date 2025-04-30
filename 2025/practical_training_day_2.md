@@ -214,3 +214,8 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 > - Per-class GFF3 splits (e.g., All_Ty1_Copia.gff3, Simple_repeats.gff3) reside under Repeat_Annotation_NoSat_split_by_class_gff3/
 > - Top level directory contains symbolic links to the most important annotation files
 > - Tandem repeat annotations are available as structure-based (TideCluster) and similarity-based (RepeatMasker) annotations.
+
+
+# Make IGV visualization
+
+ TODO - use IGV session??
