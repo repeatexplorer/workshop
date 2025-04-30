@@ -103,7 +103,7 @@ annotation.
 ## Running the Repeat Annotation Pipeline
 
 ### Pre-requisites
-- Singularity installed (available in singularity conda package)
+- Singularity installed (available in `singularity` conda environment)
 - Pipeline singularity container (DOI: https://doi.org/10.5281/zenodo.15234515) can be downloaded
 from: https://zenodo.org/records/15234516/files/assembly_repeat_annotation_pipeline_0.6.7.sif?download=1
 
@@ -125,8 +125,8 @@ reduce_library: True # possible values are: True, False, if missing, True is use
 
 
 > **Note**: Use absolute paths for all files in the configuration file. The pipeline will
-> create a directory named `Repeat_Annotations` in the current working directory to store
-> the output files.
+> create a directory named `output` in the current working directory to store
+> all the output files.
 
 ### Running the pipeline
 
@@ -139,10 +139,63 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 
 ### Expected running times
 
-- *Filipendula ulmaria* (275 Mb) - 56 min on 20 CPU, 256 GB RAM
-- *Ailanthus altissima* assembly (0.94 Gb): ~ 5 hrs on 20 CPU, 256 GB RAM
-- *Ballota nigra* assembly (1.2 Gb) - 9 hrs on 20 CPU, 256 GB RAM
-- *P. sativum* assembly (4.2 Gb):  ~ 4 days on 24 CPU, 256 GB RAM 
+| Species                      | Genome Size | Runtime | CPU Cores | RAM    |
+|------------------------------|-------------|---------|-----------|--------|
+| Filipendula ulmaria          | 275 Mb      | 56 min  | 20        | 256 GB | 
+| Ailanthus altissima assembly | 0.94 Gb     | 5 hrs   | 20        | 256 GB |
+| Ballota nigra assembly       | 1.2 Gb      | 9 hrs   | 20        | 256 GB |
+| Pisum sativum assembly       | 4.2 Gb      | 4 days  | 24        | 256 GB |
+| Vicia faba                   | 12.1 Gb     | 22 days | 36        | 384 GB | 
+
+
 
 ## Output data structure
 
+```text
+<output_dir>/
+├── DANTE/
+│   ├── DANTE.gff3                 # Raw DANTE annotation of retrotransposon domains
+│   └── DANTE_filtered.gff3        # Filtered DANTE output (high-confidence domains)
+├── DANTE_LTR/
+│   ├── DANTE_LTR.gff3             # LTR retrotransposon coordinates from DANTE_LTR
+│   ├── DANTE_LTR_summary.html     # Graphical summary report of LTR-RT detection
+│   └── LTR_RTs_library.fasta      # Extracted LTR-RT sequences library
+├── TideCluster/
+│   ├── default/                                  # TideCluster with default setting monopmer size  
+│   │   ├── TideCluster_clustering.gff3           # GFF3 file with tandem repeats detected by TideHunter
+│   │   ├── TideCluster_tidehunter_short.gff3     # GFF3 file with tandem repeat clusters
+│   │   ├── TideCluster_annotation.gff3           # GFF3 file with tandem repeat clusters annotated by RepeatMasker.
+│   │   └── *_10k.bw, *_100k.bw                   # Tandem repeat density tracks (10 Kb and 100 Kb windows)
+│   └── short_monomer/
+│       ├── TideCluster_clustering.gff3           # Short-monomer repeat clusters
+│       ├── TideCluster_annotation.gff3           # Short-monomer repeat clusters
+│       └── TideCluster_tidehunter_short.gff3     # Short-monomer predictions
+├── Libraries/
+│   ├── class_ii_library.fasta         # DNA transposon library (Class II) if provided or empty
+│   ├── LTR_RTs_library_clean.fasta    # Filtered LTR-RT library (no subclass 2 contamination)
+│   ├── combined_library.fasta         # Concatenated library for RepeatMasker (LTR + custom + rDNA)
+│   └── combined_library_reduced.fasta # Reduced-size library (optional clustering)
+├── RepeatMasker/
+│   ├── RM_on_combined_library.out             # Raw RepeatMasker output
+│   ├── RM_on_combined_library.gff3            # RepeatMasker annotations converted to GFF3 format
+│   ├── RM_on_combined_library_plus_DANTE.gff3 # Merged RepeatMasker + DANTE filtered domains
+│   └── Repeat_Annotation_NoSat.gff3           # Final annotation with satellites subtracted
+├── Repeat_Annotation_NoSat_split_by_class_gff3/
+│         ├── 
+│         ├──                                       # GFF3 files for each repeat class         
+│
+├── Repeat_Annotation_NoSat_split_by_class_bigwig/
+│         ├──                                       # BigWig files for each repeat class
+│         ├──          
+├── all_repeats_for_masking.bed       # Merged BED of all repeats for masking steps
+├── gaps_10plus.bed                   # Coordinates of gaps ≥10 Ns in the assembly
+├── summary_statistics.csv            # Per-class summary counts and coverage
+├── summary_plots.pdf                 # PDF report of repeat composition and density
+├── TideCluster_report.html           # Graphical HTML summary of TideCluster results
+└── DANTE_LTR_report.html             # Graphical summary report of LTR-RT detection
+```
+
+> **Note**
+> - BigWig files (*.bw) are generated for both RepeatMasker and TideCluster annotations at 10Kb and 100Kb resolution.
+> - Per-class GFF3 splits (e.g., All_Ty1_Copia.gff3, Simple_repeats.gff3) reside under Repeat_Annotation_NoSat_split_by_class_gff3/
+> - Top level directory contains symbolic links to the most important annotation files
