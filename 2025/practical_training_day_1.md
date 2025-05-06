@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 # Input Data
 
 | Description                                   | Type  | File Name / Location                                      |
