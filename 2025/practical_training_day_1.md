@@ -22,7 +22,7 @@
 
 ## Available Environments
 
-``` bash
+```bash
 conda env list
 ```
 
@@ -30,6 +30,7 @@ conda env list
 # conda environments:
 #
 base                 * /home/helix/miniforge3
+cd-hit                 /home/helix/miniforge3/envs/cd-hit
 dante_ltr              /home/helix/miniforge3/envs/dante_ltr
 dante_tir              /home/helix/miniforge3/envs/dante_tir
 singularity            /home/helix/miniforge3/envs/singularity
@@ -40,7 +41,7 @@ tidecluster            /home/helix/miniforge3/envs/tidecluster
 
 All programs can be installed using Mamba or Conda; examples use Mamba:
 
-``` bash
+```bash
 mamba create -n dante_ltr   -c conda-forge -c bioconda -c petrnovak dante dante_ltr
 mamba create -n dante_tir   -c conda-forge -c r        -c bioconda -c petrnovak dante_tir
 mamba create -n singularity -c conda-forge -c bioconda singularity
@@ -65,7 +66,7 @@ The Singularity container (DOI:
 
 ## Installation (do not run; already installed)
 
-``` bash
+```bash
 mamba create -n tidecluster -c conda-forge -c bioconda -c petrnovak tidecluster
 ```
 
@@ -83,14 +84,14 @@ mamba create -n tidecluster -c conda-forge -c bioconda -c petrnovak tidecluster
 1.  Open a terminal, switch to the TideCluster directory, and activate
     the environment:
 
-    ``` bash
+    ```bash
     cd ~/tidecluster/
     conda activate tidecluster
     ```
 
 2.  Execute TideHunter:
 
-    ``` bash
+    ```bash
     TideCluster.py tidehunter \
       -f /mnt/data/tiny_pea.fasta \
       -pr tiny_pea_default \
@@ -112,7 +113,7 @@ mamba create -n tidecluster -c conda-forge -c bioconda -c petrnovak tidecluster
 
 ## Clustering of Tandem Repeats
 
-``` bash
+```bash
 TideCluster.py clustering \
   -f /mnt/data/tiny_pea.fasta \
   -pr tiny_pea_default \
@@ -125,7 +126,7 @@ TideCluster.py clustering \
 
 ## Annotation Using Custom Reference Library
 
-``` bash
+```bash
 TideCluster.py annotation \
   -pr tiny_pea_default \
   -l /mnt/data/Tandem_repeat_library.fasta \
@@ -145,7 +146,7 @@ TideCluster.py annotation \
 4.  Delete **Column C**.
 5.  Save as `tiny_pea_default_annotation_refDB.csv`.
 
-``` bash
+```bash
 tc_update_gff3.py \
   -g tiny_pea_default_annotation.gff3 \
   -t tiny_pea_default_annotation_refDB.csv \
@@ -159,7 +160,7 @@ tc_update_gff3.py \
 
 ## Consensus Sequence Generation with TAREAN
 
-``` bash
+```bash
 TideCluster.py tarean \
   -f /mnt/data/tiny_pea.fasta \
   -pr tiny_pea_default \
@@ -173,7 +174,7 @@ TideCluster.py tarean \
 *In this example, we demonstrate automatic execution of all analysis
 steps with custom settings to detect short monomer repeats.*
 
-``` bash
+```bash
 TideCluster.py run_all \
   -f /mnt/data/tiny_pea.fasta \
   -pr tiny_pea_short_monomers \
@@ -201,7 +202,7 @@ TideCluster.py run_all \
 
 ## Running DANTE
 
-``` bash
+```bash
 conda activate dante_ltr
 # Check versions
 dante --version
@@ -213,7 +214,7 @@ dante_ltr --version
 > and v4.0. DANTE versions up to 0.1.9 include REXdb Viridiplantae 3.0;
 > versions ≥0.2.0 include REXdb Viridiplantae 4.0.
 
-``` bash
+```bash
 mkdir ~/te_annotation
 cd ~/te_annotation/
 GENOME=/mnt/data/tiny_pea.fasta
@@ -230,7 +231,7 @@ domains using `dante_gff_output_filtering.py`.
 
 ### Example of Filtering DANTE Output
 
-``` bash
+```bash
 # Default filtering
 dante_gff_output_filtering.py --dom_gff DANTE.gff3 \
   -ouf DANTE_filtered_default.gff3 \
@@ -245,7 +246,7 @@ Default thresholds:
 -   Min alignment identity: 0.35
 -   Min alignment similarity: 0.45
 
-``` bash
+```bash
 # Default thresholds with additional filters for Ty3/gypsy and RT domains
 dante_gff_output_filtering.py --dom_gff DANTE.gff3 \
   -el gypsy -sd RT \
@@ -255,7 +256,7 @@ dante_gff_output_filtering.py --dom_gff DANTE.gff3 \
 
 ## Extracting DNA Sequences from Filtered DANTE Output
 
-``` bash
+```bash
 dante_gff_to_dna.py \
   -i $GENOME \
   -d DANTE_filtered_Gypsy_RT.gff3 \
@@ -276,7 +277,7 @@ lineage.
 
 ## Running DANTE_LTR
 
-``` bash
+```bash
 cd ~/te_annotation/
 dante_ltr -g DANTE.gff3 -s $GENOME -o DANTE_LTR -c 5 -M 1
 ```
@@ -303,7 +304,7 @@ dante_ltr -g DANTE.gff3 -s $GENOME -o DANTE_LTR -c 5 -M 1
 
 ## Creating an LTR-RT Library for RepeatMasker
 
-``` bash
+```bash
 dante_ltr_to_library -g DANTE_LTR.gff3 -s $GENOME -o DANTE_LTR_library -c 5 -m 5
 ```
 
@@ -340,7 +341,7 @@ DANTE_LTR_library/
 -   Input FASTA: `/mnt/data/tiny_pea.fasta`.
 -   Unfiltered DANTE output: `DANTE.gff3`.
 
-``` bash
+```bash
 cd ~/te_annotation/
 conda activate dante_tir
 dante_tir.py -g DANTE.gff3 -f $GENOME -o DANTE_TIR -c 10
