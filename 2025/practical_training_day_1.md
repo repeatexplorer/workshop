@@ -462,6 +462,7 @@ sequences are clustered using `mmseq2` program and library of representative
 sequences is generated. 
 
 ```bash
+cd DANTE_TIR
 dante_tir_summary.R -g DANTE_TIR_final.gff3 -f $GENOME -o DANTE_TIR_summary
 ```
 Output directory will contain:
@@ -483,7 +484,7 @@ Output directory will contain:
      - `~/te_annotation/DANTE.gff3`
      - `~/te_annotation/DANTE_filtered_default.gff3`
      - `~/te_annotation/DANTE_LTR.gff3`
-     - `~/te_annotation/DANTE_TIR_final.gff3`
+     - `~/te_annotation/DANTE_TIR/DANTE_TIR_final.gff3`
      
 
 # Example Analysis on Complete Genome Assembly of *P.sativum* Cameor v2
