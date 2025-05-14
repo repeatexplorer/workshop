@@ -329,10 +329,12 @@ cd ~/te_annotation/
 dante_ltr -g DANTE.gff3 -s $GENOME -o DANTE_LTR -c 5 -M 1
 ```
 
-> **Details:** - Input must be unfiltered DANTE GFF3. - `-M 1` sets the
+> **Details:** - Input must be unfiltered DANTE GFF3. Option `-M 1` sets the
 > maximum missing protein domains. - `--te_constrains` specifies TE
 > search constraints. - `--no_ambiguous_domains` removes ambiguous
 > domains from analysis.
+> 
+> Command will take about 5 minutes to run.
 
 **Output files:**
 
@@ -432,6 +434,8 @@ DANTE_LTR_library/
 - Input FASTA: `/mnt/data/tiny_pea.fasta`.
 - Unfiltered DANTE output: `DANTE.gff3`.
 
+## Running DANTE_TIR
+
 ```bash
 cd ~/te_annotation/
 conda activate dante_tir
@@ -440,7 +444,11 @@ dante_tir.py -g DANTE.gff3 -f $GENOME -o DANTE_TIR -c 10
 
 **Output (`DANTE_TIR/`):**
 
-- `DANTE_TIR_final.gff3` (final annotations)
+- `DANTE_TIR_final.gff3`: GFF3 file with TIR annotations.GFR3 file include following attributes:
+  - `tir_seq5` and `tir_seq3`: 5' and 3' TIR sequences
+  - `tsd` : target site duplication sequence
+  - `Classification`: classification into superfamily
+  - `ID` : unique ID of the element
 - Extracted DNA sequences:
   - `DANTE_TIR_EnSpm_CACTA.fasta`
   - `DANTE_TIR_MuDR_Mutator.fasta`
@@ -448,7 +456,23 @@ dante_tir.py -g DANTE.gff3 -f $GENOME -o DANTE_TIR -c 10
   - `DANTE_TIR_final.fasta` (all elements)
 - `TIR_classification_summary.txt` (tabular summary)
 
-## Exploration of Results in IGV
+DANTE_TIR GFF3 can be summarized using `dante_tir_summary.R` script. This script
+generates a summary HTML report of the annotations. Additionally, the DNA transposon
+sequences are clustered using `mmseq2` program and library of representative
+sequences is generated. 
+
+```bash
+dante_tir_summary.R -g DANTE_TIR_final.gff3 -f $GENOME -o DANTE_TIR_summary
+```
+Output directory will contain:
+- `report.html`: HTML report with summary of TIR annotations
+- `{superfamily}_representative_elements.csv`: Table with information about representative elements and respective clusters sizes (multiplicity)
+- `{superfamily}_representative_elements_all.fasta`: FASTA file with all representative elements
+- `{superfamily}_representative_elements_multiplicity3plus.fasta`: FASTA file with representative elements with multiplicity 3 or more
+
+
+
+# Exploration of Results in IGV
 
 1. Launch IGV.
 2. Open previously saved session:
