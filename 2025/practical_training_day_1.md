@@ -361,9 +361,7 @@ Types of features in GFF3:
 - **primer_binding_site**: This feature represents the site where a tRNA primer binds to 
   initiate reverse transcription.
 
-![](img.png){
-  width=70%
-}
+![](img.png){width=70%}
 
 Attributes of features in GFF3:
 
