@@ -492,7 +492,12 @@ Output directory will contain:
 Analysis by TideCluster, DANTE, DANTE_LTR and DANTE_TIR on the complete genome assembly is stored in
 `/mnt/data/example_analyses/`
 
-TODO - make IGV session file
+- Full `DANTE_LTR` report is available at
+  `/mnt/data/example_analyses/DANTE_LTR/DANTE_LTR_summary.html`
+- Full `DANTE_TIR` report is available at
+  `/mnt/data/example_analysis/DANTE_TIR/DANTE_TIR_summary/report.html`
+
+TODO - make IGV session file with all the outputs
 
 
 # Analysis of DANTE output
