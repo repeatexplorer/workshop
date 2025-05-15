@@ -3,12 +3,12 @@
 # Input Data
 
 
-| Description                                   | Type  | File Name / Location                                      |
-| --------------------------------------------- | ----- | --------------------------------------------------------- |
-| Genome assembly for tandem repeat annotation  | FASTA | `/mnt/data/tiny_pea.fasta`                                |
-| Tandem repeat library                         | FASTA | `/mnt/data/Tandem_repeat_library.fasta`                   |
-| RepeatMasker custom library                   | FASTA | `/mnt/data/RM_custom_library.fasta`                       |
-| Configuration file for annotation pipeline    | YAML  | `/mnt/data/config.yaml`                                   |
+| Description                            | Type  | File Name / Location                                      |
+| -------------------------------------- | ----- | --------------------------------------------------------- |
+| Genome assembly for repeat annotation  | FASTA | `/mnt/data/tiny_pea.fasta`                                |
+| Tandem repeat library                  | FASTA | `/mnt/data/Tandem_repeat_library.fasta`                   |
+| RepeatMasker custom library            | FASTA | `/mnt/data/RM_custom_library.fasta`                       |
+| Configuration file for annotation pipeline | YAML  | `/mnt/data/config.yaml`                                   |
 | Singularity container for annotation pipeline | SIF   | `/mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif` |
 
 # Example Analysis on Full Data (*P. sativum* Cameor v2 Assembly)
@@ -263,8 +263,7 @@ dante_ltr --version
 ```bash
 mkdir ~/te_annotation
 cd ~/te_annotation/
-GENOME=/mnt/data/tiny_pea.fasta
-dante -q $GENOME -o DANTE.gff3 -c 15
+dante -q /mnt/data/tiny_pea.fasta -o DANTE.gff3 -c 15
 ```
 > This step takes about 6 minutes
 
@@ -305,7 +304,7 @@ dante_gff_output_filtering.py --dom_gff DANTE.gff3 \
 
 ```bash
 dante_gff_to_dna.py \
-  -i $GENOME \
+  -i /mnt/data/tiny_pea.fasta \
   -d DANTE_filtered_Gypsy_RT.gff3 \
   -out DANTE_filtered_Gypsy_RT_dna \
   -ex
@@ -326,13 +325,14 @@ lineage.
 
 ```bash
 cd ~/te_annotation/
-dante_ltr -g DANTE.gff3 -s $GENOME -o DANTE_LTR -c 5 -M 1
+dante_ltr -g DANTE.gff3 -s /mnt/data/tiny_pea.fasta -o DANTE_LTR -c 5 -M 1
 ```
 
-> **Details:** - Input must be unfiltered DANTE GFF3. Option `-M 1` sets the
-> maximum missing protein domains. - `--te_constrains` specifies TE
-> search constraints. - `--no_ambiguous_domains` removes ambiguous
-> domains from analysis.
+> **Details:** 
+> - Input must be unfiltered DANTE GFF3.
+> - Option `-M 1` sets the maximum missing protein domains.
+> - `--te_constrains` specifies TE search constraints. Example of table with constraints can be found [here](https://github.com/kavonrtep/dante_ltr?tab=readme-ov-file#modifying-ltr-rt-search-constrains)
+> - `--no_ambiguous_domains` removes ambiguous domains from analysis.
 > 
 > Command will take about 5 minutes to run.
 
@@ -393,12 +393,12 @@ Attributes of features in GFF3:
   domain sequence.Interuption could be either stop codon or frameshift.
 - **Hit_to_DB_Length**: The length of the hit compared to the database sequence length.
 
-Note all attributes are present in all features. Some are feature specific. 
+Not all attributes are present in all features. Some are feature specific. 
 
 ## Creating an LTR-RT Library for RepeatMasker
 
 ```bash
-dante_ltr_to_library -g DANTE_LTR.gff3 -s $GENOME -o DANTE_LTR_library -c 5 -m 5
+dante_ltr_to_library -g DANTE_LTR.gff3 -s /mnt/data/tiny_pea.fasta -o DANTE_LTR_library -c 5 -m 5
 ```
 
 > **Options:** - `-m 5`: minimum cluster coverage (default: 3). -
@@ -439,7 +439,7 @@ DANTE_LTR_library/
 ```bash
 cd ~/te_annotation/
 conda activate dante_tir
-dante_tir.py -g DANTE.gff3 -f $GENOME -o DANTE_TIR -c 10
+dante_tir.py -g DANTE.gff3 -f /mnt/data/tiny_pea.fasta -o DANTE_TIR -c 10
 ```
 
 **Output (`DANTE_TIR/`):**
@@ -463,7 +463,7 @@ sequences is generated.
 
 ```bash
 cd DANTE_TIR
-dante_tir_summary.R -g DANTE_TIR_final.gff3 -f $GENOME -o DANTE_TIR_summary
+dante_tir_summary.R -g DANTE_TIR_final.gff3 -f /mnt/data/tiny_pea.fasta -o DANTE_TIR_summary
 ```
 Output directory will contain:
 - `report.html`: HTML report with summary of TIR annotations

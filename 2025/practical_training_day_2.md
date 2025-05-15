@@ -18,12 +18,12 @@ elements in genomic sequences.
 
 ## Input Data
 
-| Description                                   | Type  | File Name / Location                                      |
-|-----------------------------------------------|-------|-----------------------------------------------------------|
-| Genome assembly for tandem repeat annotation  | FASTA | `/mnt/data/tiny_pea.fasta`                                |
-| Tandem repeat library                         | FASTA | `/mnt/data/Tandem_repeat_library.fasta`                   |
-| RepeatMasker custom library                   | FASTA | `/mnt/data/RM_custom_library.fasta`                       |
-| Configuration file for annotation pipeline    | YAML  | `/mnt/data/config.yaml`                                   |
+| Description                            | Type  | File Name / Location                                      |
+|----------------------------------------|-------|-----------------------------------------------------------|
+| Genome assembly for repeat annotation  | FASTA | `/mnt/data/tiny_pea.fasta`                                |
+| Tandem repeat library                  | FASTA | `/mnt/data/Tandem_repeat_library.fasta`                   |
+| RepeatMasker custom library            | FASTA | `/mnt/data/RM_custom_library.fasta`                       |
+| Configuration file for annotation pipeline | YAML  | `/mnt/data/config.yaml`                                   |
 | Singularity container for annotation pipeline | SIF   | `/mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif` |
 
 
@@ -108,7 +108,7 @@ annotation.
 from: https://zenodo.org/records/15234516/files/assembly_repeat_annotation_pipeline_0.6.7.sif?download=1
 
 ### Setup
-To run the pipeline, you need to create a configuration file named `config.yaml`. This file should contain the following parameters:
+To run the pipeline, you need to a configuration file named `config.yaml`. This file should contain the following parameters:
 
 ```yaml
 genome_fasta: /mnt/data/test_data/tiny_pea.fasta
@@ -132,10 +132,18 @@ reduce_library: True # possible values are: True, False, if missing, True is use
 
 ```bash
 conda activate singularity
+mkdir ~/Repeat_Annotations
 cd ~/Repeat_Annotations
 singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif -c /mnt/data/config.yaml -t 10
 # the running time is about 1 hour 
 ```
+> **Details**: 
+> - The `-B` flag binds host directories /mnt/data and the current working directory
+> - $PWD is shell variable set to the current working directory
+> - -t 10 sets the number of threads to use during execution
+> - -c specifies the path to your configuration file
+> - All data bust be either in the current working directory or in the /mnt/data directory to be accessible by the container
+
 
 ### Expected running times
 
