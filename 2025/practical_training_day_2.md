@@ -224,6 +224,37 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 > - Tandem repeat annotations are available as structure-based (TideCluster) and similarity-based (RepeatMasker) annotations.
 
 
-# Make IGV visualization
+# Make IGV visualization with Example Analysis on Complete Genome Assembly of *P.sativum* Cameor v2
 
- TODO - use IGV session??
+Analysis repeat annotation pipeline for the complete genome assembly is stored in
+`/mnt/data/example_analyses/RepeatAnnotations`
+
+- run IGV
+- Open Genome Assembly: **Genomes** -> ***Load Genome from File...***
+  - Select the genome assembly file from `/mnt/data/Pisum_assembly_cameor_ver_2.fasta`
+- Import following annotation tracks with **File** -> ***Load from File...***:
+  
+  - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/All_Ty1_Copia_10k.bw`
+  - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/All_Ty3_Gypsy_10k.bw`
+  - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/Mobile_elements_10k.bw` 
+  - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/rDNA_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_10k.bw`
+  - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/Simple_repeats_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_1_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_2_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_3_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_4_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_5_10k.bw`
+  - `Tandem_repeats_TideCluster.gff3`
+  - `Tandem_repeats_TideCluster_annotated.gff3`
+  - `Tandem_repeats_RepeatMasker.gff3`
+  - `TideCluster/TideCluster_clustering_default_and_short_merged.gff3`
+  - `DANTE_LTR.gff3`
+  - `all_repeats_for_masking.bed`
+  - `gaps_10plus.bed`
+  - `Low_complexity_RepeatMasker.gff3`
+  - `Simple_repeats_RepeatMasker.gff3`
+  - `Mobile_elements_RepeatMaskerg.gff3`
+
+
+Regions of interest: **TODO**
