@@ -2,7 +2,7 @@
 
 https://forgemia.inra.fr/urgi-anagen/wiki-repet/-/wikis/REPET_Snakemake-:-REPET-V4
 
-# Repeat Annotaion Pipeline (Viridiplantae)
+# Repeat Annotation Pipeline (Viridiplantae)
 
 The Assembly annotation pipeline is a comprehensive genome annotation workflow that
 integrates multiple specialized tools to identify and classify various types of repetitive
