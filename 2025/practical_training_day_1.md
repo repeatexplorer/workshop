@@ -585,10 +585,10 @@ Align protein RT sequences using muscle with -super5 parameter (Fast)
 muscle -super5 DANTE_filtered_RT-chromovirus.fasta -output DANTE_filtered_RT-chromovirus.aligned
 ```
 
-### Align RT-coding sequences using muscle with -super5 parameter (Do not run)
-> To save time, this aligments werealready precomputed,  results are stored in
+### Alignment oxf RT-coding sequences using muscle with -super5 parameter (Do not run)
+> To save time, alignments were precomputed, results are stored in
 > `/mnt/data/example_analyses/DANTE/alignments/`
-> Example command: 
+> Example command (DO NOT RUN!): 
 > ```bash
 > muscle -super5 DANTE_filtered_RT-chromovirus_dna.fasta -output DANTE_filtered_RT-chromovirus_dna.aligned
 > muscle -super5 DANTE_filtered_RT-chromovirus_dna-ext.fasta -output DANTE_filtered_RT-chromovirus_dna-ext.aligned
