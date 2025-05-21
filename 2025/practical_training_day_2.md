@@ -123,7 +123,7 @@ tandem_repeat_library: /mnt/data/test_data/Tandem_repeat_library.fasta
 
 Additional optional parameters are:
 ```yaml
-repeatmasker_sensitivity: default # posible values are : sensitive, default, quick,
+repeatmasker_sensitivity: default # possible values are : sensitive, default, quick,
 reduce_library: True # possible values are: True, False, if missing, True is used
 ```
 
@@ -146,7 +146,7 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 > - $PWD is shell variable set to the current working directory
 > - -t 10 sets the number of threads to use during execution
 > - -c specifies the path to your configuration file
-> - All data bust be either in the current working directory or in the /mnt/data directory to be accessible by the container
+> - All data must be either in the current working directory or in the /mnt/data directory to be accessible by the container
 
 
 ### Expected running times
@@ -228,15 +228,16 @@ singularity run -B /mnt/data -B $PWD /mnt/data/assembly_repeat_annotation_pipeli
 > - Tandem repeat annotations are available as structure-based (TideCluster) and similarity-based (RepeatMasker) annotations.
 
 
-# Make IGV visualization with Example Analysis on Complete Genome Assembly of *P.sativum* Cameor v2
+# Make IGV visualization with Example Analysis on Complete Genome Assembly of *P. sativum* Cameor v2
 
-Analysis repeat annotation pipeline for the complete genome assembly is stored in
+Output from repeat annotation pipeline for the complete genome assembly is stored in
 `/mnt/data/example_analyses/RepeatAnnotations`
 
 - run IGV
 - Open Genome Assembly: **Genomes** -> ***Load Genome from File...***
   - Select the genome assembly file from `/mnt/data/Pisum_assembly_cameor_ver_2.fasta`
-- Import following annotation tracks with **File** -> ***Load from File...***:
+- Import following annotation tracks located in`~/Repeat_Annotations/output/` directory with **File** -> ***Load from File...***:
+
   
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/All_Ty1_Copia_10k.bw`
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/All_Ty3_Gypsy_10k.bw`
@@ -258,7 +259,7 @@ Analysis repeat annotation pipeline for the complete genome assembly is stored i
   - `gaps_10plus.bed`
   - `Low_complexity_RepeatMasker.gff3`
   - `Simple_repeats_RepeatMasker.gff3`
-  - `Mobile_elements_RepeatMaskerg.gff3`
+  - `Mobile_elements_RepeatMasker.gff3`
 
 
 Regions of interest: **TODO**
