@@ -1,3 +1,101 @@
+# TEtrimmer
+
+
+## Introduction of TEtrimmer
+Many tools have been developed for the discovery and annotation of transposable elements (TEs). 
+However, the high-quality TE consensus library construction still requires manual curation of TEs, 
+which is time-consuming and needs experts with an in-depth understanding of TE biology.
+
+TEtrimmer (https://github.com/qjiangzhao/TEtrimmer) is a software designed to automate the manual curation of TEs. The input can be a TE library from 
+*de novo* TE discovery tools, such as EDTA and RepeatModeler2, or a TE library from closely related species. 
+For each input consensus sequence, TEtrimmer automatically performs BLASTN search,  sequence extraction, extension, 
+multiple sequence alignment (MSA), MSA clustering, MSA cleaning, TE boundary definition, and TE classification. 
+TEtrimmer also provides a graphical user interface (GUI) to inspect and improve predicted TEs, which can assist 
+achieving manual curation-level TE consensus libraries easily. 
+
+## Run TEtrimmer
+### Copy TEtrimmer source code to your local folder
+```bash
+cp -r /mnt/data/TEtrimmer /home/helix/Documents
+```
+
+### Check TEtrimmer help messages
+
+```bash
+# Activate the conda "singularity" environment
+
+conda activate singularity
+
+# Test TEtrimmer with Singularity
+
+singularity exec --writable-tmpfs \
+--bind /home/helix/Documents/TEtrimmer:/bind_path \
+--bind /mnt/data/pfam_database:/pfam \
+/mnt/data/tetrimmer_1.4.0--hdfd78af_0.sif \
+python /bind_path/tetrimmer/TEtrimmer.py --help
+```
+
+
+### Run TEtrimmer with Singularity
+```bash
+singularity exec --writable-tmpfs \
+--bind /home/helix/Documents/TEtrimmer:/bind_path \
+--bind /mnt/data/pfam_database:/pfam \
+/mnt/data/tetrimmer_1.4.0--hdfd78af_0.sif \
+python /bind_path/tetrimmer/TEtrimmer.py \
+-i /bind_path/tests/test_input.fa \
+-g /bind_path/tests/test_genome.fasta \
+-o /bind_path/TEtrimmer_output \
+--pfam_dir /pfam \
+-t 5 --classify_all
+```
+### Output structure
+
+- 📁**Classification** - *This folder is used for TE classifications.*  
+- 📁**Multiple_sequence_alignment** - *All raw files will be stored in this folder if < --debug > is enabled.*
+  - 📄**error_file.txt** - *Error file to store all error messages, only visible if errors were found.*
+- 📁**Single_fasta_files** - *All sequences in the input file will be separated into single FASTA files and stored here.*
+- 📁**TEtrimmer_for_proof_curation** - *This folder contains files used for manual inspection of TEtrimmer annotations.* 
+  - 📁**Annotation_perfect** - *Four files are associated with each sequence as shown below.*
+    - 📄**TE_name.raw.fa** - *Multiple sequence alignment file before TE boundary definition.*
+    - 📄**TE_name.fa** - *Multiple sequence alignment file after TE boundary definition, which is used to generate the consensus sequence.*
+    - 📄**TE_name.pdf** - *Plot file used to evaluate output.*
+    - 📄**TE_name.cluster.fa** - *Multiple sequence alignment file before clustering.*
+  - 📁**Annotation_good** 
+  - 📁**Annotation_check_recommended**
+  - 📁**Annotation_check_required**
+  - 📁**Clustered_proof_curation** - *This folder contains all the output files from folder "Annotation_perfect", "Annotation_good", "Annotation_check_recommended", and "Annotation_check_required". The difference is TEtrimmer group similar output TEs into one "Cluster", which can make it easier to compare similar outputs.*
+  - 📁**TE_low_copy** - *This folder contains low copy TEs.*
+  - 📁**TE_skipped** - *Contains TE_Aid plots for all skipped TEs.*
+- 📄**Sequence_name_mapping.txt** - *This file connects the input sequence names with the modified names from TEtrimmer.*
+- 📄**summary.txt** - *Summary file.* 
+- 📄**TEtrimmer_consensus.fasta** - *TE consensus library file before de-duplication.*
+- 📄**TEtrimmer_consensus_merged.fasta** - *TE consensus library file after de-duplication.*
+
+
+## Inspect outputs with TEtrimmerGUI
+### Start TEtrimmerGUI
+```bash
+# Use the conda "base" environment for TEtrimmerGUI
+
+conda deactivate
+
+# Provide execute permission 
+
+chmod +x /home/helix/Documents/TEtrimmer/tetrimmerGUI/blast/*
+
+# Check TEtrimmerGUI help messages
+
+python /home/helix/Documents/TEtrimmer/tetrimmerGUI/TEtrimmerGUI.py --help
+
+# Run TEtrimmerGUI
+python /home/helix/Documents/TEtrimmer/tetrimmerGUI/TEtrimmerGUI.py \
+-i /home/helix/Documents/TEtrimmer/TEtrimmer_output/TEtrimmer_for_proof_curation \
+-g /home/helix/Documents/TEtrimmer/tests/test_genome.fasta \
+-o /home/helix/Documents
+```
+
+
 # Repeat Annotations with REPET
 
 https://forgemia.inra.fr/urgi-anagen/wiki-repet/-/wikis/REPET_Snakemake-:-REPET-V4
