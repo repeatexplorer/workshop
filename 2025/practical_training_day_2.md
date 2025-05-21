@@ -12,12 +12,12 @@ elements in genomic sequences.
 - TideCluster is employed to identify tandem repeats, with separate processes for
   default-length and short monomer repeats.
 - The pipeline then creates custom libraries of repeat sequences, including those from LTR
-  retrotransposons and Tandem repeats. This library can be supplements with user-provided
+  retrotransposons and tandem repeats. This library can be supplemented with user-provided
   custom repeat databases.
 - After building these repeat libraries, the pipeline uses RepeatMasker to annotate the
   genome comprehensively.
-- The workflow produces detailed GFF3 annotation files for different repeat classes (
-  mobile elements, simple repeats, low complexity regions, rDNA), density visualizations
+- The workflow produces detailed GFF3 annotation files for different repeat classes 
+  (mobile elements, simple repeats, low complexity regions, rDNA), density visualizations
   as bigWig files, and summary statistics and plots.
 
 ## Input Data
@@ -31,7 +31,7 @@ elements in genomic sequences.
 | Singularity container for annotation pipeline | SIF   | `/mnt/data/assembly_repeat_annotation_pipeline_0.6.7.sif` |
 
 
-The pipeline supports supplying a additional custom repeat library via the
+The pipeline supports supplying an additional custom repeat library via the
 optional `custom_library`
 parameter. When provided, RepeatMasker will use this library for similarity-based
 annotation. Sequences must be in FASTA format, with headers following the convention:
@@ -84,7 +84,7 @@ DANTE_TIR—because DANTE_TIR is still experimental. If you also need to annotat
 transposons, you must supply your own custom library. We recommend generating that library
 with the standalone DANTE_TIR pipeline and then manually curating its entries to minimize
 false-positive annotations. Alternatively, you can use Class II transposon clusters
-obtained via RepeatExplorer2. Library of rDNA sequences is built-in pipeline. If Class II
+obtained via RepeatExplorer2. Library of rDNA sequences is built-in in the pipeline. If Class II
 custom library is provided, the pipeline uses this library to identify LTR-RT elements
 with potential Class II insertions. Such elements are not used in similarity-based
 annotation.
@@ -106,13 +106,13 @@ annotation.
 
 ## Running the Repeat Annotation Pipeline
 
-### Pre-requisites
+### Prerequisites
 - Singularity installed (available in `singularity` conda environment)
 - Pipeline singularity container (DOI: https://doi.org/10.5281/zenodo.15234515) can be downloaded
 from: https://zenodo.org/records/15234516/files/assembly_repeat_annotation_pipeline_0.6.7.sif?download=1
 
 ### Setup
-To run the pipeline, you need to a configuration file named `config.yaml`. This file should contain the following parameters:
+To run the pipeline, you need a configuration file named `config.yaml`. This file should contain the following parameters:
 
 ```yaml
 genome_fasta: /mnt/data/test_data/tiny_pea.fasta
@@ -121,7 +121,7 @@ custom_library: /mnt/data/test_data/RM_custom_library.fasta
 tandem_repeat_library: /mnt/data/test_data/Tandem_repeat_library.fasta
 ```
 
-Additional optional parameters are
+Additional optional parameters are:
 ```yaml
 repeatmasker_sensitivity: default # posible values are : sensitive, default, quick,
 reduce_library: True # possible values are: True, False, if missing, True is used

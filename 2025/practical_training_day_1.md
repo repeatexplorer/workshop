@@ -170,7 +170,7 @@ TideCluster.py tarean \
   -c 10
 ```
 
-- Inspect `tiny_pea_default_tarean_index.html` in your web browser.
+- Inspect `tiny_pea_default_index.html` in your web browser.
 
 ## Automatic Pipeline Execution (Short Monomers)
 
@@ -331,7 +331,9 @@ dante_ltr -g DANTE.gff3 -s /mnt/data/tiny_pea.fasta -o DANTE_LTR -c 5 -M 1
 > **Details:** 
 > - Input must be unfiltered DANTE GFF3.
 > - Option `-M 1` sets the maximum missing protein domains.
-> - `--te_constrains` specifies TE search constraints. Example of table with constraints can be found [here](https://github.com/kavonrtep/dante_ltr?tab=readme-ov-file#modifying-ltr-rt-search-constrains)
+> 
+> **Advanced settings** (not used in this example):
+> - `--te_constrains` parameter can be used to adjust TE search constraints. Example of table with constraints can be found [here](https://github.com/kavonrtep/dante_ltr?tab=readme-ov-file#modifying-ltr-rt-search-constrains)
 > - `--no_ambiguous_domains` removes ambiguous domains from analysis.
 > 
 > Command will take about 5 minutes to run.
@@ -478,7 +480,7 @@ Output directory will contain:
 1. Launch IGV.
 2. Open previously saved session:
    - **File → Load Session...** → select
-     `~/tidecluster/tiny_pea_default_igv_session.xml`.
+     `~/tidecluster/igv_session.xml`.
 3. Load additional files from DANTE, DANTE_LTR and DANTE_TIR analysis:
    - **File → Load from File...** → select:
      - `~/te_annotation/DANTE.gff3`
@@ -496,9 +498,6 @@ Analysis by TideCluster, DANTE, DANTE_LTR and DANTE_TIR on the complete genome a
   `/mnt/data/example_analyses/DANTE_LTR/DANTE_LTR_summary.html`
 - Full `DANTE_TIR` report is available at
   `/mnt/data/example_analysis/DANTE_TIR/DANTE_TIR_summary/report.html`
-
-TODO - make IGV session file with all the outputs
-
 
 # Analysis of DANTE output
 
@@ -719,9 +718,9 @@ Inspect the CRM RT alignments in SeaView:
 
 -   **File → Open** → select:
     -   `~/domains/DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM_dna.aligned`
--   **File → Props** **→ Consensus options → Edit threshold** →
+-   Props** **→ Consensus options → Edit threshold** →
     -   set consensus threshold value to 90%
-    -   tick off "allow gaps"
+    -   tick on "allow gaps"
 -   Use `ctrl-A` to select all sequences in the alignment
 -   **Edit → Consensus sequence**
 
@@ -784,10 +783,10 @@ In Dendroscope:
 -   **File → Open** → select (labels at internal nodes are bootstrap
     values):
     -   `~/domains/DANTE_filtered_RT-chromovirus_dna-CRM_all_renamed-BioNJ_tree`
--   **View → Radial Labels** → tick off
+-   **View → Radial Labels** → tick on
 -   **Edit → Find**
-    -   tick off "Whole words only"
-    -   click on the folder icon and select
+    -   tick on "Whole words only"
+    -   click on the folder icon and select individually.
         -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-singlets.list`
         -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL8.list`
         -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL34.list`
