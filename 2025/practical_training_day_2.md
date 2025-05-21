@@ -236,7 +236,7 @@ Output from repeat annotation pipeline for the complete genome assembly is store
 - run IGV
 - Open Genome Assembly: **Genomes** -> ***Load Genome from File...***
   - Select the genome assembly file from `/mnt/data/Pisum_assembly_cameor_ver_2.fasta`
-- Import following annotation tracks located in`~/Repeat_Annotations/output/` directory with **File** -> ***Load from File...***:
+- Import following annotation tracks located in `/mnt/data/example_analyses/RepeatAnnotations` directory with **File** -> ***Load from File...***:
 
   
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/All_Ty1_Copia_10k.bw`
