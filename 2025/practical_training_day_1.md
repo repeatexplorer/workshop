@@ -510,20 +510,22 @@ Analysis by TideCluster, DANTE, DANTE_LTR and DANTE_TIR on the complete genome a
 
 ### Filtering DANTE Output - selection of chromovirus RT domain sequences
 
-
 Activate dante_ltr conda environment
+
 ```bash
 conda activate dante_ltr
 ```
 
 Create working directory
+
 ```bash
 cd
 mkdir domains
 cd domains
 ```
 
-Extract RT domain sequences  
+Extract RT domain sequences
+
 ```bash
 dante_gff_output_filtering.py \
    --dom_gff /mnt/data/example_analyses/DANTE/domains_filtered.gff \
@@ -535,6 +537,7 @@ dante_gff_output_filtering.py \
 ```
 
 Extract coding sequences for the selected RT domains
+
 ```bash
 dante_gff_to_dna.py \
   --input_dna /mnt/data/Pisum_assembly_cameor_ver_2.fasta \
@@ -543,11 +546,13 @@ dante_gff_to_dna.py \
 ```
 
 Combine all chromovirus RT-coding sequences into one file
+
 ```bash
 cat DANTE_filtered_RT-chromovirus_dna/*.fasta > DANTE_filtered_RT-chromovirus_dna.fasta
 ```
 
 Extract and extend coding sequences for the selected RT domains
+
 ```bash
 dante_gff_to_dna.py \
   --input_dna /mnt/data/Pisum_assembly_cameor_ver_2.fasta \
@@ -557,11 +562,14 @@ dante_gff_to_dna.py \
 ```
 
 Combine all chromovirus extended RT-coding sequences into one file
+
 ```bash
 cat DANTE_filtered_RT-chromovirus_dna-ext/*.fasta > DANTE_filtered_RT-chromovirus_dna-ext.fasta
 ```
 
-Compare DANTE_filtered_RT-chromovirus_dna.fasta and DANTE_filtered_RT-chromovirus_dna-ext.fasta
+Compare DANTE_filtered_RT-chromovirus_dna.fasta and
+DANTE_filtered_RT-chromovirus_dna-ext.fasta
+
 ```bash
 head -n 10 DANTE_filtered_RT-chromovirus_dna.fasta
 head -n 10 DANTE_filtered_RT-chromovirus_dna-ext.fasta
@@ -570,54 +578,62 @@ head -n 10 DANTE_filtered_RT-chromovirus_dna-ext.fasta
 ### Alignment of RT protein and dna sequences using muscle
 
 Replace stop codon symbols `*` with unknown aminoacid symbols `x`
+
 ```bash
 sed -i -e 's/*/x/g' DANTE_filtered_RT-chromovirus.fasta
 ```
 
 Inspect muscle options
+
 ```bash
 muscle
 ```
 
 Align protein RT sequences using muscle with -super5 parameter (Fast)
+
 ```bash
 muscle -super5 DANTE_filtered_RT-chromovirus.fasta -output DANTE_filtered_RT-chromovirus.aligned
 ```
 
-### Alignment oxf RT-coding sequences using muscle with -super5 parameter (Do not run)
+### Alignment of RT-coding sequences using muscle with -super5 parameter (Do not run)
+
 > To save time, alignments were precomputed, results are stored in
-> `/mnt/data/example_analyses/DANTE/alignments/`
-> Example command (DO NOT RUN!): 
+> `/mnt/data/example_analyses/DANTE/alignments/` Example command (DO NOT
+> RUN!):
+>
 > ```bash
 > muscle -super5 DANTE_filtered_RT-chromovirus_dna.fasta -output DANTE_filtered_RT-chromovirus_dna.aligned
 > muscle -super5 DANTE_filtered_RT-chromovirus_dna-ext.fasta -output DANTE_filtered_RT-chromovirus_dna-ext.aligned
 > ```
 
-
 -   Inspect the alignments in SeaView:
     -   **File → Open** → select:
-        -   `~/domains/DANTE_filtered_RT-chromovirus.aligned`
+        -   `/home/helix/domains/DANTE_filtered_RT-chromovirus.aligned`
         -   `/mnt/data/example_analyses/DANTE/alignments/DANTE_filtered_RT-chromovirus_dna.aligned`
         -   `/mnt/data/example_analyses/DANTE/alignments/DANTE_filtered_RT-chromovirus_dna-ext.aligned`
 
 ### Sequence clustering using cd-hit
 
 Activate cd-hit conda environment
+
 ```bash
 conda activate cd-hit
 ```
 
 Inspect cd-hit options
+
 ```bash
 cd-hit
 ```
 
 Cluster RT protein domain sequences
+
 ```bash
 cd-hit -i DANTE_filtered_RT-chromovirus.fasta -o DANTE_filtered_RT-chromovirus.cd-hit -c 0.95 -d 0 -T 10 -S 10
 ```
 
-# Cluster RT-coding sequences
+Cluster RT-coding sequences
+
 ```bash
 cd-hit-est -i DANTE_filtered_RT-chromovirus_dna.fasta -o DANTE_filtered_RT-chromovirus_dna.cd-hit -c 0.95 -d 0 -T 10 -S 30
 ```
@@ -634,82 +650,101 @@ cd-hit-est -i DANTE_filtered_RT-chromovirus_dna.fasta -o DANTE_filtered_RT-chrom
 ### Sorting and formatting cd-hit outputs
 
 Sort cd-hit clusters
+
 ```bash
 clstr_sort_by.pl < DANTE_filtered_RT-chromovirus.cd-hit.clstr > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted
 ```
 
 ```bash
-
 clstr_sort_by.pl < DANTE_filtered_RT-chromovirus_dna.cd-hit.clstr > DANTE_filtered_RT-chromovirus_dna.cd-hit.clstr.sorted
 ```
 
 Format the sorted clusters into a table
+
 ```bash
-clstr2txt.pl DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab
+clstr2txt.pl DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tsv
 ```
 
 ```bash
-clstr2txt.pl DANTE_filtered_RT-chromovirus_dna.cd-hit.clstr.sorted > DANTE_filtered_RT-chromovirus_dna.cd-hit.clstr.sorted.tab
+clstr2txt.pl DANTE_filtered_RT-chromovirus_dna.cd-hit.clstr.sorted > DANTE_filtered_RT-chromovirus_dna.cd-hit.clstr.sorted.tsv
 ```
 
 ### Merging cd-hit cluster table with sequence annotations
 
 sort cd-hit cluster table based on the first column (names)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab | grep -v "id  clstr" | sort -k1,1 > temp_table_1
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tsv | grep -v "id  clstr" | sort -k1,1 > temp_table_1.tsv
 ```
 
-extract annotations from protein sequence fasta file ()
+extract annotations from protein sequence fasta file
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.fasta | grep ">" | cut -d " " -f1,3 --output-delimiter=$'\t' | cut -d ">" -f2 > classifications
+cat DANTE_filtered_RT-chromovirus.fasta | grep ">" | cut -d " " -f1,3 --output-delimiter=$'\t' | cut -d ">" -f2 > DANTE_filtered_RT-chromovirus_classifications.tsv
 ```
 
 sort classification table based on the first column (names)
+
 ```bash
-cat classifications | sort -k1,1 > temp_table_2
+cat DANTE_filtered_RT-chromovirus_classifications.tsv | sort -k1,1 > temp_table_2.tsv
 ```
 
-combine the tables (they must have same number of lines and must be sorted)
+combine the tables (they must have same number of lines and must be
+sorted)
+
 ```bash
-join -t$'\t' temp_table_1 temp_table_2 | sort -k2,2n -k5,5nr > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class
+join -t$'\t' temp_table_1.tsv temp_table_2.tsv | sort -k2,2n -k5,5nr > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv
 ```
+
 Remove temporary files
+
 ```bash
 rm temp_table_*
 ```
 
 -   Inspect cluster annotations in LibreOffice Calc:
     -   **File → Open** → select:
-        -   `~/domains/DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class`
+        -   `~/domains/DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv`
 
 ### Identification of the most abundant family in a particular lineage (CRM) and calculating its DNA consensus sequence
 
-Print all representatives of cd-hit clusters annotated as CRM and having at least two members (`$#` in `awk` commands specify the column number; i.e. `$3` is the 3rd column which is clstr_size and `$5` is the 5th column which is `clstr_rep`)
+Print all representatives of cd-hit clusters annotated as CRM and having
+at least two members (`$#` in `awk` commands specify the column number;
+i.e. `$3` is the 3rd column which is clstr_size and `$5` is the 5th
+column which is `clstr_rep`)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" | awk '$5==1' | awk '$3>1'
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" | awk '$5==1' | awk '$3>1'
 ```
 
-Print all lines from the cd-hit cluster 8, the biggest CRM cluster (cluster number is in the 2nd column)
+Print all lines from the cd-hit cluster 8, the biggest CRM cluster
+(cluster number is in the 2nd column)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" | awk '$2==8'
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" | awk '$2==8'
 ```
 
-Extract sequence names for the cd-hit cluster 8 (names are in the 1st column)
+Extract sequence names for the cd-hit cluster 8 (names are in the 1st
+column)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" | awk '$2==8' | cut -f1 > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM.list
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" | awk '$2==8' | cut -f1 > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM.list
 ```
 
 extract DNA sequences for the cd-hit cluster 8
+
 ```bash
 seqtk subseq DANTE_filtered_RT-chromovirus_dna.fasta DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM.list > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM_dna.fasta
 ```
 
 align DNA sequences extracted from the cd-hit cluster 8
+
 ```bash
 muscle -align DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM_dna.fasta -output DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM_dna.aligned
 ```
 
 align all CRM RT-coding sequences (to compare with CL8-CRM)
+
 ```bash
 muscle -align DANTE_filtered_RT-chromovirus_dna/CRM.fasta -output DANTE_filtered_RT-chromovirus_dna-CRM_all.aligned
 ```
@@ -717,8 +752,8 @@ muscle -align DANTE_filtered_RT-chromovirus_dna/CRM.fasta -output DANTE_filtered
 Inspect the CRM RT alignments in SeaView:
 
 -   **File → Open** → select:
-    -   `~/domains/DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM_dna.aligned`
--   Props** **→ Consensus options → Edit threshold** →
+    -   `/home/helix/domainsDANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CL8-CRM_dna.aligned`
+-   **Props** **→ Consensus options → Edit threshold** →
     -   set consensus threshold value to 90%
     -   tick on "allow gaps"
 -   Use `ctrl-A` to select all sequences in the alignment
@@ -726,7 +761,9 @@ Inspect the CRM RT alignments in SeaView:
 
 ### Phylogenetic analysis of all CRM RT-coding DNA sequences
 
-In terminal - Replace colons with two underlines (colons in names interfere with tree formats)
+In terminal - Replace colons with two underlines (colons in names
+interfere with tree formats)
+
 ```bash
 sed -i -e 's/:/__/g' DANTE_filtered_RT-chromovirus_dna-CRM_all.aligned
 ```
@@ -734,48 +771,54 @@ sed -i -e 's/:/__/g' DANTE_filtered_RT-chromovirus_dna-CRM_all.aligned
 In Seaview:
 
 -   **File → Open** → select:
-    -   `~/domains/DANTE_filtered_RT-chromovirus_dna-CRM_all.aligned`
-
-<!-- -->
-
+    -   `/home/helix/domains/DANTE_filtered_RT-chromovirus_dna-CRM_all.aligned`
 -   **Trees → Distance methods** → select:
     -   BioNJ
     -   Ignore all gap sites: No
     -   Distance: Observed
     -   Bootstrap: 100
-    -   Save to File
-        -   `~/domains/DANTE_filtered_RT-chromovirus_dna-CRM_all-BioNJ_tree`
+    -   Click on `Go` to calculate the BioNJ tree
+    -   The tree will appear in a new window
+        -   Save the tree to a file
+            -   **File → Save unrooted tree**
+                -   `/home/helix/domains/DANTE_filtered_RT-chromovirus_dna-CRM_all-BioNJ_tree`
 
 In Terminal, prepare lists:
 
-Select and rename domains from clusters having only member (cluster size is in the 3rd column)
+Select and rename domains from clusters that have only one member
+(cluster size is in the 3rd column)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class \
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv \
 | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" \
 | awk '$3==1' \
 | cut -f1 \
 | sed -e 's/:/__/g' \
-> DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-singlets.list
+> DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-singlets_list.txt
 ```
 
-Select and rename domains from the cluster 8 (the biggest CRM cluster; cluster number is in the 2nd column)
+Select and rename domains from the cluster 8 (the biggest CRM cluster;
+cluster number is in the 2nd column)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class \
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv \
 | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" \
 | awk '$2==8' \
 | cut -f1 \
 | sed -e 's/:/__/g' \
-> DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL8.list
+> DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL8_list.txt
 ```
 
-Select and remain domains from the cluster 34 (the 2nd biggest CRM cluster; cluster number is in the 2nd column)
+Select and remain domains from the cluster 34 (the 2nd biggest CRM
+cluster; cluster number is in the 2nd column)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab.class \
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.class.tsv \
 | grep "Class_I|LTR|Ty3/gypsy|chromovirus|CRM" \
 | awk '$2==34' \
 | cut -f1 \
 | sed -e 's/:/__/g' \
-> DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL34.list
+> DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL34_list.txt
 ```
 
 In Dendroscope:
@@ -783,13 +826,15 @@ In Dendroscope:
 -   **File → Open** → select (labels at internal nodes are bootstrap
     values):
     -   `~/domains/DANTE_filtered_RT-chromovirus_dna-CRM_all_renamed-BioNJ_tree`
+-   **Layout → Draw Radial Phylogram**
 -   **View → Radial Labels** → tick on
+-   **View → Sparse Labels** → tick off
 -   **Edit → Find**
     -   tick on "Whole words only"
     -   click on the folder icon and select individually.
-        -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-singlets.list`
-        -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL8.list`
-        -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL34.list`
+        -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-singlets_list.txt`
+        -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL8_list.txt`
+        -   `DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted_CRM-CL34_list.txt`
 
 ### Phylogenetic analysis using protein domain sequences
 
@@ -804,27 +849,35 @@ In Dendroscope:
 >
 > Check and manually edit sequence alignments if needed.
 
-Select domains from clusters with at least five members
+Select representative domains from clusters with at least five members
+(clstr_size is the 3rd column, representative sequences have value 1 in
+the 5th column)
+
 ```bash
-cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tab | awk '$3>4' | awk '$5==1' | cut -f1 > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01.list
+cat DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted.tsv | awk '$3>4' | awk '$5==1' | cut -f1 > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01.list
 ```
+
 extract the sequences for analysis
+
 ```bash
 seqtk subseq DANTE_filtered_RT-chromovirus.cd-hit DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01.list > DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.fasta
 ```
 
 Rename the sequences (sequence names must not contain colons)
+
 ```bash
 sed -i -e 's/:/__/g' DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.fasta
 ```
+
 Align the sequences using muscle
+
 ```bash
 muscle -align DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.fasta -output DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.aligned
 ```
 
 -   Inspect the alignment in SeaView and calculate phylogenetic tree:
     -   **File → Open** → select:
-        -   `~/domains/DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.aligned`
+        -   `/home/helix/domains/DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.aligned`
             -   for comparison open also
                 `~/domains/DANTE_filtered_RT-chromovirus.aligned`
     -   Use `ctrl-A` to select all sequences in the alignment
@@ -832,4 +885,3 @@ muscle -align DANTE_filtered_RT-chromovirus.cd-hit.clstr.sorted-reps01_prot.fast
         -   BioNJ
         -   Distance: Observed
         -   Bootstrap: 1000
-
