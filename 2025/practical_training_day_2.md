@@ -243,8 +243,8 @@ Output from repeat annotation pipeline for the complete genome assembly is store
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/All_Ty3_Gypsy_10k.bw`
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/Mobile_elements_10k.bw` 
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/rDNA_10k.bw`
-  - `TideCluster/default/TideCluster_clustering_10k.bw`
   - `Repeat_Annotation_NoSat_split_by_class_bigwig/10k/Simple_repeats_10k.bw`
+  - `TideCluster/default/TideCluster_clustering_10k.bw`
   - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_1_10k.bw`
   - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_2_10k.bw`
   - `TideCluster/default/TideCluster_clustering_split_files_bigwig/10k/TRC_3_10k.bw`
@@ -262,4 +262,7 @@ Output from repeat annotation pipeline for the complete genome assembly is store
   - `Mobile_elements_RepeatMasker.gff3`
 
 
-Regions of interest: **TODO**
+Regions of interest: 
+
+- `chr5:205,846,880-208,075,181` : Example of structure based TideCluster annotation and similarity based RepeatMasker annotation based TideCluster library
+- `chr6:165,888,582-165,958,151` : Example of DANTE_LTR annotation and RepeatMasker annotation
